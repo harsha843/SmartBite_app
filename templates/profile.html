@@ -1,0 +1,623 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Clean background elements -->
+    <div class="bg-elements">
+        <div class="bg-shape bg-shape-1"></div>
+        <div class="bg-shape bg-shape-2"></div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <!-- Profile Card -->
+            <div class="card profile-card">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="header-content">
+                        <div class="user-info">
+                            <h1 class="user-name">{{ user.name }}</h1>
+                            <p class="user-title">Health Profile</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Content -->
+                <div class="profile-body">
+                    <form method="POST" class="profile-form">
+                        <!-- Personal Information Section -->
+                        <div class="section-title">
+                            <h3>Personal Information</h3>
+                            <div class="title-line"></div>
+                        </div>
+
+                        <div class="row g-4">
+                            <!-- Age Field -->
+                            <div class="col-md-6">
+                                <div class="form-floating input-field">
+                                    <div class="input-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M19 3H18V1H16V3H8V1H6V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 19H5V8H19V19M12 10C10.9 10 10 10.9 10 12S10.9 14 12 14 14 13.1 14 12 13.1 10 12 10"/>
+                                        </svg>
+                                    </div>
+                                    <input type="number" class="form-control" id="age" name="age" min="10" max="120" value="{{ user.age }}" required>
+                                    <label for="age">Age</label>
+                                    <div class="input-underline"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Gender Field -->
+                            <div class="col-md-6">
+                                <div class="form-floating input-field">
+                                    <div class="input-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6M12,13C14.67,13 20,14.33 20,17V20H4V17C4,14.33 9.33,13 12,13M12,14.9C9.03,14.9 5.9,16.36 5.9,17V18.1H18.1V17C18.1,16.36 14.97,14.9 12,14.9Z"/>
+                                        </svg>
+                                    </div>
+                                    <select class="form-select" id="gender" name="gender" required>
+                                        <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                                        <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+                                        <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+                                    </select>
+                                    <label for="gender">Gender</label>
+                                    <div class="input-underline"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Height Field -->
+                            <div class="col-md-6">
+                                <div class="form-floating input-field">
+                                    <div class="input-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M7,2H17V4H16V18.17L17,17.17V20H7V19L8,18V4H7V2M13,4V10H15V4H13M9,4V16H11V4H9M7,17L9,19V20H15V19L17,17H7Z"/>
+                                        </svg>
+                                    </div>
+                                    <input type="number" class="form-control" id="height" name="height" min="100" max="250" value="{{ user.height }}" required>
+                                    <label for="height">Height (cm)</label>
+                                    <div class="input-underline"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Weight Field -->
+                            <div class="col-md-6">
+                                <div class="form-floating input-field">
+                                    <div class="input-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M12,3A4,4 0 0,1 16,7C16,7.73 15.81,8.41 15.46,9H18C18.95,9 19.75,9.67 19.95,10.56C21.96,18.57 22,18.78 22,19A2,2 0 0,1 20,21H4A2,2 0 0,1 2,19C2,18.78 2.04,18.57 4.05,10.56C4.25,9.67 5.05,9 6,9H8.54C8.19,8.41 8,7.73 8,7A4,4 0 0,1 12,3M12,5A2,2 0 0,0 10,7A2,2 0 0,0 12,9A2,2 0 0,0 14,7A2,2 0 0,0 12,5Z"/>
+                                        </svg>
+                                    </div>
+                                    <input type="number" class="form-control" id="weight" name="weight" min="30" max="300" value="{{ user.weight }}" required>
+                                    <label for="weight">Weight (kg)</label>
+                                    <div class="input-underline"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Activity Level Field -->
+                            <div class="col-12">
+                                <div class="form-floating input-field">
+                                    <div class="input-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M17,1.67C16.42,1.18 15.71,1 15,1C12.62,1 10.66,3.28 11.2,6.62L9.91,7.91C9.39,7.5 8.7,7.24 8,7.24C6.34,7.24 5,8.58 5,10.24C5,11.9 6.34,13.24 8,13.24C8.7,13.24 9.39,12.98 9.91,12.57L11.2,13.86C10.66,17.2 12.62,19.5 15,19.5C15.71,19.5 16.42,19.32 17,18.83C18.22,17.83 18.29,16.1 17.33,15L16.24,13.91C16.59,13.25 16.8,12.5 16.8,11.75C16.8,11 16.59,10.25 16.24,9.59L17.33,8.5C18.29,7.4 18.22,5.67 17,4.67V1.67M15,4.5C15.55,4.5 16,4.95 16,5.5C16,6.05 15.55,6.5 15,6.5C14.45,6.5 14,6.05 14,5.5C14,4.95 14.45,4.5 15,4.5M8,9.24C8.55,9.24 9,9.69 9,10.24C9,10.79 8.55,11.24 8,11.24C7.45,11.24 7,10.79 7,10.24C7,9.69 7.45,9.24 8,9.24M15,16.5C14.45,16.5 14,16.05 14,15.5C14,14.95 14.45,14.5 15,14.5C15.55,14.5 16,14.95 16,15.5C16,16.05 15.55,16.5 15,16.5Z"/>
+                                        </svg>
+                                    </div>
+                                    <select class="form-select" id="activity" name="activity" required>
+                                        <option value="Sedentary (little or no exercise)" {% if user.activity == 'Sedentary (little or no exercise)' %}selected{% endif %}>Sedentary (little or no exercise)</option>
+                                        <option value="Lightly active (light exercise 1-3 days/week)" {% if user.activity == 'Lightly active (light exercise 1-3 days/week)' %}selected{% endif %}>Lightly active (light exercise 1-3 days/week)</option>
+                                        <option value="Moderately active (moderate exercise 3-5 days/week)" {% if user.activity == 'Moderately active (moderate exercise 3-5 days/week)' %}selected{% endif %}>Moderately active (moderate exercise 3-5 days/week)</option>
+                                        <option value="Very active (hard exercise 6-7 days/week)" {% if user.activity == 'Very active (hard exercise 6-7 days/week)' %}selected{% endif %}>Very active (hard exercise 6-7 days/week)</option>
+                                        <option value="Extra active (very hard exercise & physical job)" {% if user.activity == 'Extra active (very hard exercise & physical job)' %}selected{% endif %}>Extra active (very hard exercise & physical job)</option>
+                                    </select>
+                                    <label for="activity">Activity Level</label>
+                                    <div class="input-underline"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Metrics Section -->
+                        {% if bmi %}
+                        <div class="section-title">
+                            <h3>Health Metrics</h3>
+                            <div class="title-line"></div>
+                        </div>
+
+                        <div class="health-metrics">
+                            <div class="row">
+                                <!-- BMI Card -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="metric-card">
+                                        <div class="metric-content">
+                                            <div class="metric-header">
+                                                <h4>Body Mass Index</h4>
+                                            </div>
+                                            <div class="metric-value">{{ "%.1f"|format(bmi) }}</div>
+                                            <div class="metric-footer">
+                                                <span class="metric-category {{ bmi_category|lower|replace(' ', '-') }}">
+                                                    {{ bmi_category }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Calories Card -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="metric-card">
+                                        <div class="metric-content">
+                                            <div class="metric-header">
+                                                <h4>Daily Calories</h4>
+                                            </div>
+                                            <div class="metric-value">{{ "%.0f"|format(tdee) }}</div>
+                                            <div class="metric-footer">
+                                                <span class="metric-description">Maintenance calories</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-content">
+                                    <span class="btn-text">Update Profile</span>
+                                </span>
+                            </button>
+                            
+                            <a href="{{ url_for('prediction') }}" class="btn btn-secondary">
+                                <span class="btn-content">
+                                    <span class="btn-text">Analyze Food</span>
+                                </span>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+:root {
+    --primary-color: #2c83c3;
+    --secondary-color: #1cb0a8;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --info-color: #3498db;
+    --light-color: #f8f9fa;
+    --dark-color: #2c3e50;
+    --text-color: #34495e;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --card-bg: #ffffff;
+    --header-gradient: linear-gradient(135deg, var(--primary-color) 0%, #185a9d 100%);
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    color: var(--text-color);
+    background-color: #f5f7fa;
+    line-height: 1.6;
+}
+
+.profile-container {
+    position: relative;
+    padding: 3rem 0;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+.bg-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.05;
+}
+
+.bg-shape-1 {
+    width: 600px;
+    height: 600px;
+    background: var(--primary-color);
+    top: -200px;
+    left: -200px;
+}
+
+.bg-shape-2 {
+    width: 400px;
+    height: 400px;
+    background: var(--secondary-color);
+    bottom: -150px;
+    right: -150px;
+}
+
+.profile-card {
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    z-index: 1;
+    background: var(--card-bg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.profile-header {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+    background: var(--header-gradient);
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.user-info {
+    color: white;
+    text-align: center;
+}
+
+.user-name {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    letter-spacing: 0.5px;
+}
+
+.user-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.profile-body {
+    padding: 2.5rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    position: relative;
+}
+
+.section-title h3 {
+    margin-bottom: 0;
+    color: var(--dark-color);
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.title-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
+    margin-left: 1.5rem;
+}
+
+.input-field {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    z-index: 10;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.form-control, .form-select {
+    padding-left: 50px;
+    height: 56px;
+    border-radius: 6px !important;
+    border: 1px solid var(--border-color);
+    background: var(--light-color);
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    /* Prevent text from overlapping with icon */
+    padding-right: 15px;
+}
+
+/* Fix for number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(44, 131, 195, 0.15);
+    background: white;
+}
+
+.input-underline {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.form-floating:hover .input-underline {
+    width: 100%;
+}
+
+.health-metrics {
+    margin: 2.5rem 0;
+}
+
+.metric-card {
+    position: relative;
+    border-radius: 8px;
+    padding: 1.5rem;
+    color: white;
+    overflow: hidden;
+    height: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
+}
+
+.metric-card:nth-child(2) {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #0d9488 100%);
+}
+
+.metric-content {
+    position: relative;
+    z-index: 2;
+}
+
+.metric-header {
+    margin-bottom: 1rem;
+}
+
+.metric-header h4 {
+    font-weight: 600;
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0.5rem 0;
+    color: white;
+}
+
+.metric-footer {
+    margin-top: 1rem;
+}
+
+.metric-category {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.metric-description {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+.btn {
+    position: relative;
+    padding: 0.875rem 1.75rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 1rem;
+    color: white;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* BMI category colors */
+.underweight {
+    background: rgba(52, 152, 219, 0.8);
+}
+.normal-weight {
+    background: rgba(46, 204, 113, 0.8);
+}
+.overweight {
+    background: rgba(243, 156, 18, 0.8);
+}
+.obese {
+    background: rgba(231, 76, 60, 0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .profile-body {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        height: 140px;
+    }
+    
+    .user-name {
+        font-size: 1.75rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .health-metrics .row > div {
+        margin-bottom: 1.5rem;
+    }
+    
+    .metric-value {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-body {
+        padding: 1.5rem;
+    }
+    
+    .section-title h3 {
+        font-size: 1.1rem;
+    }
+    
+    .form-control, .form-select {
+        height: 52px;
+        font-size: 0.9rem;
+    }
+    
+    .profile-header {
+        height: 120px;
+    }
+    
+    .user-name {
+        font-size: 1.5rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add ripple effect to buttons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Create ripple element
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple-effect');
+            
+            // Position the ripple
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            button.appendChild(ripple);
+            
+            // Remove ripple after animation
+            setTimeout(() => {
+                ripple.remove();
+            }, 1000);
+        });
+    });
+    
+    // Animate form inputs on focus
+    const formInputs = document.querySelectorAll('.form-control, .form-select');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.querySelector('.input-underline').style.width = '100%';
+        });
+        
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.querySelector('.input-underline').style.width = '0';
+            }
+        });
+    });
+    
+    // Add hover effect to metric cards
+    const metricCards = document.querySelectorAll('.metric-card');
+    metricCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+    });
+});
+</script>
+{% endblock %}

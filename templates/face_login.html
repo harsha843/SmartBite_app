@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0 fw-bold"><i class="bi bi-person-bounding-box me-2"></i>Face Login</h3>
+                            <p class="mb-0 opacity-75">Look directly at the camera to authenticate</p>
+                        </div>
+                        <div class="avatar avatar-lg bg-white text-primary rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-camera-fill fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body py-4" style="background-color: #f8f9fa;">
+                    <!-- Camera Container -->
+                    <div id="camera-container" class="text-center mb-4">
+                        <div class="border rounded p-1 mb-3" style="width: 100%; height: 400px; background-color: #eee; position: relative;">
+                            <video id="video" width="100%" height="100%" autoplay playsinline muted></video>
+                            <canvas id="canvas" style="display:none;"></canvas>
+                            <div id="face-outline" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                width: 70%; height: 70%; border: 3px dashed rgba(102, 126, 234, 0.7); border-radius: 50%; 
+                                display: none; pointer-events: none;"></div>
+                            <div id="camera-debug" class="position-absolute top-0 start-0 p-2 bg-white bg-opacity-75 text-start" style="display: none; font-size: 12px; color: #333; max-width: 80%; border-radius: 0 0 5px 0;">
+                                <strong>Camera Debug:</strong> <span id="camera-debug-text">Initializing...</span>
+                            </div>
+                        </div>
+                        <button id="capture-btn" class="btn btn-primary btn-lg px-4 py-2 rounded-pill shadow-sm" disabled>
+                            <i class="bi bi-camera-fill me-2"></i> Capture & Login
+                        </button>
+                        <div class="mt-3">
+                            <button id="show-debug-btn" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-bug-fill me-1"></i> Show Debug Info
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Fallback for when camera isn't available -->
+                    <div id="camera-fallback" class="text-center" style="display: none;">
+                        <div class="alert alert-warning mb-4">
+                            <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Camera Not Available</h4>
+                            <p id="camera-error-details">We couldn't access your camera. This might be because:</p>
+                            <ul class="text-start">
+                                <li>You haven't granted camera permissions</li>
+                                <li>Your browser doesn't support camera access</li>
+                                <li>You're not using a secure HTTPS connection</li>
+                                <li>No camera is available on your device</li>
+                            </ul>
+                            <div class="mt-3">
+                                <button id="retry-camera-btn" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-arrow-repeat me-1"></i> Retry Camera Access
+                                </button>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 py-2 rounded-pill shadow-sm me-2">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Use Password Login
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg px-4 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-person-plus me-2"></i> Create Account
+                        </a>
+                    </div>
+
+                    <!-- Processing/Result Messages -->
+                    <div id="result-message" class="alert mb-0" style="display:none;"></div>
+                </div>
+                <div class="card-footer bg-white text-center">
+                    <p class="mb-0">Having trouble? <a href="{{ url_for('login') }}" class="fw-bold text-primary">Try password login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar {
+        width: 50px;
+        height: 50px;
+    }
+    
+    #face-outline {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { border-color: rgba(102, 126, 234, 0.7); }
+        50% { border-color: rgba(102, 126, 234, 0.3); }
+        100% { border-color: rgba(102, 126, 234, 0.7); }
+    }
+    
+    #video, #canvas {
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .card {
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('capture-btn');
+    const resultMessage = document.getElementById('result-message');
+    const cameraContainer = document.getElementById('camera-container');
+    const cameraFallback = document.getElementById('camera-fallback');
+    const faceOutline = document.getElementById('face-outline');
+    const cameraDebug = document.getElementById('camera-debug');
+    const cameraDebugText = document.getElementById('camera-debug-text');
+    const showDebugBtn = document.getElementById('show-debug-btn');
+    const retryBtn = document.getElementById('retry-camera-btn');
+    const cameraErrorDetails = document.getElementById('camera-error-details');
+    
+    let stream = null;
+    
+    // Toggle debug info
+    showDebugBtn.addEventListener('click', function() {
+        if (cameraDebug.style.display === 'none') {
+            cameraDebug.style.display = 'block';
+            showDebugBtn.innerHTML = '<i class="bi bi-bug-fill me-1"></i> Hide Debug Info';
+        } else {
+            cameraDebug.style.display = 'none';
+            showDebugBtn.innerHTML = '<i class="bi bi-bug-fill me-1"></i> Show Debug Info';
+        }
+    });
+    
+    // Retry camera access
+    retryBtn.addEventListener('click', function() {
+        cameraFallback.style.display = 'none';
+        cameraContainer.style.display = 'block';
+        initCamera();
+    });
+    
+    // Check if running on localhost or HTTPS
+    const isLocalhost = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+    const isSecure = window.location.protocol === 'https:';
+    
+    function updateDebug(message) {
+        cameraDebugText.textContent = message;
+        console.log("Camera debug:", message);
+    }
+    
+    // Initialize camera
+    function initCamera() {
+        updateDebug('Checking environment...');
+        
+        // Check if we're on a secure context
+        if (!isSecure && !isLocalhost) {
+            updateDebug('Not on HTTPS or localhost');
+            showCameraError('For security reasons, camera access requires HTTPS or localhost.');
+            return;
+        }
+        
+        // Check if browser supports camera API
+        if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+            updateDebug('getUserMedia not supported');
+            showCameraError('Your browser doesn\'t support camera access. Please try Chrome, Firefox, or Edge.');
+            return;
+        }
+        
+        updateDebug('Requesting camera permission...');
+        
+        // Try to access camera
+        navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'user', // Use front camera
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false 
+        })
+        .then(function(mediaStream) {
+            updateDebug('Camera access granted!');
+            stream = mediaStream;
+            video.srcObject = mediaStream;
+            
+            // Wait for video to be ready
+            video.onloadedmetadata = function() {
+                updateDebug('Video stream loaded');
+                video.play()
+                    .then(() => {
+                        updateDebug('Video playback started');
+                        faceOutline.style.display = 'block';
+                        captureBtn.disabled = false;
+                        trackFacePosition();
+                    })
+                    .catch(err => {
+                        updateDebug('Video play failed: ' + err.message);
+                        handleCameraError(err);
+                    });
+            };
+            
+            video.onerror = function() {
+                updateDebug('Video element error');
+                handleCameraError(new Error('Video element error'));
+            };
+        })
+        .catch(function(error) {
+            updateDebug('Camera access error: ' + error.name);
+            handleCameraError(error);
+        });
+    }
+    
+    // Capture image when button clicked
+    captureBtn.addEventListener('click', function() {
+        if (!stream) {
+            showResultMessage('No camera stream available', 'danger');
+            return;
+        }
+        
+        updateDebug('Capturing image...');
+        
+        // Get dimensions from video
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        
+        if (canvas.width === 0 || canvas.height === 0) {
+            updateDebug('Invalid canvas dimensions');
+            showResultMessage('Error: Could not capture image from camera', 'danger');
+            return;
+        }
+        
+        // Draw current video frame to canvas
+        try {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            
+            if (!imageData || imageData === 'data:,') {
+                updateDebug('Failed to get image data');
+                showResultMessage('Error: Could not process camera image', 'danger');
+                return;
+            }
+            
+            // Show loading state
+            captureBtn.disabled = true;
+            captureBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Authenticating...';
+            resultMessage.style.display = 'none';
+            
+            updateDebug('Sending image to server...');
+            
+            // Send to server
+            fetch('/face_login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'image=' + encodeURIComponent(imageData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateDebug('Server response: ' + JSON.stringify(data));
+                if (data.success) {
+                    showResultMessage('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || 'Face not recognized');
+                }
+            })
+            .catch(error => {
+                updateDebug('Authentication error: ' + error.message);
+                showResultMessage('Error: ' + error.message, 'danger');
+                captureBtn.disabled = false;
+                captureBtn.innerHTML = '<i class="bi bi-camera-fill me-2"></i> Try Again';
+            });
+        } catch (err) {
+            updateDebug('Canvas draw error: ' + err.message);
+            showResultMessage('Error: Could not process camera image', 'danger');
+            captureBtn.disabled = false;
+            captureBtn.innerHTML = '<i class="bi bi-camera-fill me-2"></i> Try Again';
+        }
+    });
+    
+    // Simple face position tracking (visual feedback only)
+    function trackFacePosition() {
+        updateDebug('Setting up face tracker');
+        
+        // Remove any existing face elements
+        const faceElements = document.querySelectorAll('.face-element');
+        faceElements.forEach(el => el.remove());
+        
+        const faceDot = document.createElement('div');
+        faceDot.className = 'face-element';
+        faceDot.style.position = 'absolute';
+        faceDot.style.width = '20px';
+        faceDot.style.height = '20px';
+        faceDot.style.backgroundColor = 'rgba(102, 126, 234, 0.7)';
+        faceDot.style.borderRadius = '50%';
+        faceDot.style.top = '50%';
+        faceDot.style.left = '50%';
+        faceDot.style.transform = 'translate(-50%, -50%)';
+        faceDot.style.pointerEvents = 'none';
+        
+        const videoContainer = document.querySelector('#camera-container > div');
+        videoContainer.appendChild(faceDot);
+        
+        // Animate the dot to simulate face tracking
+        let x = 50, y = 50;
+        const trackingInterval = setInterval(() => {
+            x = 50 + Math.sin(Date.now()/1000) * 10;
+            y = 50 + Math.cos(Date.now()/800) * 5;
+            faceDot.style.left = x + '%';
+            faceDot.style.top = y + '%';
+        }, 50);
+        
+        // Store the interval ID so we can clear it later if needed
+        window.trackingInterval = trackingInterval;
+    }
+    
+    function handleCameraError(error) {
+        let errorMsg = 'Could not access the camera. ';
+        
+        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+            errorMsg = 'Camera access was denied. Please grant camera permissions and try again.';
+        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+            errorMsg = 'No camera found on this device. Please connect a camera and try again.';
+        } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+            errorMsg = 'Camera is already in use by another application or not accessible.';
+        } else if (error.name === 'OverconstrainedError') {
+            errorMsg = 'Camera doesn\'t support the required settings. Try a different camera.';
+        } else if (error.name === 'SecurityError') {
+            errorMsg = 'Camera access is only allowed on secure (HTTPS) connections or localhost.';
+        } else if (error.name === 'AbortError') {
+            errorMsg = 'Camera access was aborted. This might be due to a hardware error.';
+        } else if (error.name === 'NotSupportedError') {
+            errorMsg = 'Your browser does not support the camera features required.';
+        } else {
+            errorMsg += error.message || 'Unknown error occurred.';
+        }
+        
+        showCameraError(errorMsg);
+    }
+    
+    function showCameraError(message) {
+        updateDebug('Camera error: ' + message);
+        cameraContainer.style.display = 'none';
+        cameraFallback.style.display = 'block';
+        resultMessage.style.display = 'none';
+        
+        // Update the fallback message
+        cameraErrorDetails.textContent = message;
+    }
+    
+    function showResultMessage(message, type) {
+        resultMessage.textContent = message;
+        resultMessage.className = 'alert alert-' + type;
+        resultMessage.style.display = 'block';
+    }
+    
+    // Clean up resources when page is unloaded
+    window.addEventListener('beforeunload', function() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        if (window.trackingInterval) {
+            clearInterval(window.trackingInterval);
+        }
+    });
+    
+    // Start everything
+    initCamera();
+});
+</script>
+{% endblock %}

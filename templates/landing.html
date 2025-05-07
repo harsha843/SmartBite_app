@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriScan - AI-Powered Indian Food Nutrition Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css">
+    <style>
+        :root {
+            --primary-color: #FF5A5F; /* Vibrant coral */
+            --secondary-color: #00A699; /* Teal */
+            --accent-color: #FC642D; /* Orange */
+            --light-color: #F7F7F7; /* Light gray */
+            --dark-color: #484848; /* Dark gray */
+            --indian-saffron: #FF9933; /* Saffron */
+            --indian-green: #138808; /* India green */
+            --indian-blue: #000080; /* Navy blue */
+            --gradient-1: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            --gradient-2: linear-gradient(135deg, var(--secondary-color) 0%, var(--indian-green) 100%);
+            --gradient-3: linear-gradient(135deg, var(--indian-saffron) 0%, #FFD700 100%);
+            --gradient-4: linear-gradient(135deg, var(--indian-blue) 0%, #4B0082 100%);
+            --gradient-5: linear-gradient(135deg, var(--primary-color) 0%, var(--indian-saffron) 100%);
+            --shadow-sm: 0 5px 15px rgba(0,0,0,0.08);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.12);
+            --shadow-lg: 0 15px 35px rgba(0,0,0,0.15);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.7;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient-5);
+            color: white;
+            padding: 180px 0 150px;
+            position: relative;
+            overflow: hidden;
+            clip-path: ellipse(120% 80% at 50% 20%);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            opacity: 0.15;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            font-weight: 700;
+            padding: 15px 35px;
+            border-radius: 50px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+            color: var(--primary-color);
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .btn-primary:hover::after {
+            opacity: 1;
+        }
+        
+        .btn-outline-light {
+            border: 2px solid white;
+            color: white;
+            font-weight: 600;
+            padding: 15px 35px;
+            border-radius: 50px;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+        }
+        
+        .btn-outline-light:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+        }
+        
+        /* Feature Cards */
+        .feature-card {
+            transition: var(--transition);
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            padding: 40px 30px;
+            height: 100%;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 5px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-bottom: 5px solid var(--primary-color);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2);
+        }
+        
+        /* How It Works Section */
+        .step-card {
+            position: relative;
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            height: 100%;
+            border-left: 4px solid transparent;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        
+        .step-card:hover .step-number {
+            transform: scale(1.1);
+            background: var(--gradient-3);
+        }
+        
+        /* Food Gallery */
+        .food-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            height: 250px;
+        }
+        
+        .food-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .food-item img {
+            transition: all 0.8s ease;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .food-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .food-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            z-index: 2;
+        }
+        
+        /* Testimonials */
+        .testimonial-card {
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            padding: 30px;
+            background: white;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Navigation */
+        .navbar {
+            transition: var(--transition);
+            padding: 25px 0;
+            background: transparent !important;
+        }
+        
+        .navbar.scrolled {
+            padding: 15px 0;
+            background: rgba(255,255,255,0.98) !important;
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            position: relative;
+            padding: 8px 15px !important;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover::after {
+            width: 60%;
+        }
+        
+        .nav-link.active::after {
+            width: 60%;
+            background: var(--accent-color);
+        }
+        
+        /* Section Styling */
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 50px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-1);
+            border-radius: 4px;
+        }
+        
+        /* Colorful Sections */
+        .colorful-section {
+            background: var(--gradient-1);
+            color: white;
+        }
+        
+        .colorful-section-2 {
+            background: var(--gradient-2);
+            color: white;
+        }
+        
+        .colorful-section-3 {
+            background: var(--gradient-3);
+            color: white;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 1s ease forwards;
+        }
+        
+        .animate-fadeInLeft {
+            animation: fadeInLeft 1s ease forwards;
+        }
+        
+        .animate-fadeInRight {
+            animation: fadeInRight 1s ease forwards;
+        }
+        
+        .animate-delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .animate-delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .animate-delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        /* Floating Elements */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Spice Icons */
+        .spice-icon {
+            position: absolute;
+            opacity: 0.1;
+            z-index: 0;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .spice-icon-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 5rem;
+            color: var(--primary-color);
+            animation-delay: 0s;
+        }
+        
+        .spice-icon-2 {
+            top: 70%;
+            left: 10%;
+            font-size: 4rem;
+            color: var(--accent-color);
+            animation-delay: 1s;
+        }
+        
+        .spice-icon-3 {
+            top: 20%;
+            right: 8%;
+            font-size: 6rem;
+            color: var(--indian-saffron);
+            animation-delay: 2s;
+        }
+        
+        .spice-icon-4 {
+            bottom: 10%;
+            right: 5%;
+            font-size: 5rem;
+            color: var(--secondary-color);
+            animation-delay: 3s;
+        }
+        
+        /* Demo Section */
+        .demo-container {
+            border-radius: 20px;
+            background: white;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .demo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/food.png');
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        /* Nutrition Cards */
+        .nutrition-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            padding: 25px;
+            transition: var(--transition);
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .nutrition-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .nutrition-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        /* Counter Items */
+        .counter-item {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        
+        .counter-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .counter-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        /* Wave Shape */
+        .wave-shape {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            transform: rotate(180deg);
+        }
+        
+        .wave-shape svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
+        }
+        
+        .wave-shape .shape-fill {
+            fill: #FFFFFF;
+        }
+        
+        /* Badges */
+        .colorful-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            background: var(--gradient-3);
+            color: white;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .section {
+                padding: 80px 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-section {
+                padding: 150px 0 100px;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .btn-primary, .btn-outline-light {
+                padding: 12px 25px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-utensils me-2"></i>NutriScan<span style="color: var(--indian-saffron);">AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#demo">Live Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-outline-light btn-sm" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm ms-lg-2" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <i class="fas fa-pepper-hot spice-icon spice-icon-1"></i>
+        <i class="fas fa-mortar-pestle spice-icon spice-icon-2"></i>
+        <i class="fas fa-leaf spice-icon spice-icon-3"></i>
+        <i class="fas fa-seedling spice-icon spice-icon-4"></i>
+        
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <span class="colorful-badge animate__animated animate__fadeIn">AI-Powered Nutrition</span>
+                    <h1 class="hero-title mb-4 animate__animated animate__fadeInDown">Smart Nutrition Analysis for <span style="color: var(--indian-saffron);">Indian Cuisine</span></h1>
+                    <p class="hero-subtitle animate__animated animate__fadeIn animate__delay-1s">Our advanced Model analyzes your Indian food photos to provide instant nutritional insights. Eat smart while enjoying your favorite dishes.</p>
+                    <div class="d-flex flex-wrap gap-3 animate__animated animate__fadeIn animate__delay-2s">
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-bolt me-2"></i>Get Started Free
+                        </a>
+                        <a href="#demo" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-play-circle me-2"></i>Live Demo
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block animate__animated animate__fadeInRight animate__delay-1s">
+                    <div class="floating">
+                        <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                             alt="Indian food analysis" class="img-fluid rounded-4 shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <a href="#features" class="text-white">
+                <i class="fas fa-chevron-down fa-2x"></i>
+            </a>
+        </div>
+        
+        <div class="wave-shape">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section colorful-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5 section-title text-white">Advanced Features</h2>
+                <p class="lead text-white-50">Comprehensive nutrition analysis tailored for Indian cuisine</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4 animate-fadeInUp">
+                    <div class="feature-card text-center h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>Indian Food Recognition</h3>
+                        <p class="text-muted">Our specialized Model recognizes over 80 Indian dishes with 96% accuracy - from biryani to dosa to butter chicken.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fadeInUp animate-delay-1">
+                    <div class="feature-card text-center h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3>Detailed Nutrition</h3>
+                        <p class="text-muted">Get complete nutritional breakdown including calories, macros, and Indian-specific micronutrients.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fadeInUp animate-delay-2">
+                    <div class="feature-card text-center h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h3>Meal Plans</h3>
+                        <p class="text-muted">Receive personalized Indian meal plans based on your dietary goals and regional preferences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section bg-white position-relative" id="counter-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4">
+                    <div class="counter-item h-100">
+                        <div class="counter-number" data-target="40">40</div>
+                        <h5>Happy Users</h5>
+                        <p class="text-muted">Across our college</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="counter-item h-100">
+                        <div class="counter-number" data-target="96">96</div>
+                        <h5>Accuracy Rate</h5>
+                        <p class="text-muted">For all dishes</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="counter-item h-100">
+                        <div class="counter-number" data-target="80">80</div>
+                        <h5>Food Items</h5>
+                        <p class="text-muted">In our database</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="counter-item h-100">
+                        <div class="counter-number">1</div>
+                        <h5>Language Support</h5>
+                        <p class="text-muted">English</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5 section-title">How It Works</h2>
+                <p class="lead text-muted">Get started in just 3 simple steps</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3 animate-fadeInUp">
+                            <div class="text-center step-card h-100">
+                                <div class="step-number">1</div>
+                                <h4>Snap Your Meal</h4>
+                                <p class="text-muted">Take a picture of your Indian food using your smartphone camera.</p>
+                                <div class="mt-3">
+                                    <i class="fas fa-camera fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3 animate-fadeInUp animate-delay-1">
+                            <div class="text-center step-card h-100">
+                                <div class="step-number">2</div>
+                                <h4>Model Analysis</h4>
+                                <p class="text-muted">Our trained model identifies the Indian dish .</p>
+                                <div class="mt-3">
+                                    <i class="fas fa-brain fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3 animate-fadeInUp animate-delay-2">
+                            <div class="text-center step-card h-100">
+                                <div class="step-number">3</div>
+                                <h4>Get Insights</h4>
+                                <p class="text-muted">Receive detailed nutritional information specific to Indian cuisine.</p>
+                                <div class="mt-3">
+                                    <i class="fas fa-chart-bar fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3 animate-fadeInUp animate-delay-3">
+                            <div class="text-center step-card h-100">
+                                <div class="step-number">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <h4>Track Progress</h4>
+                                <p class="text-muted">Monitor your daily intake with Indian food preferences in mind.</p>
+                                <div class="mt-3">
+                                    <i class="fas fa-calendar-check fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Food Gallery Section -->
+    <section class="section colorful-section-2">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5 section-title text-white">Popular Indian Foods We Analyze</h2>
+                <p class="lead text-white-50">From North to South, East to West - all Indian cuisines covered</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4 col-sm-6 animate-fadeInUp">
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Biryani">
+                        <div class="food-overlay">
+                            <h4 class="text-white">Hyderabadi Biryani</h4>
+                            <p class="text-white mb-0">~450 kcal per serving</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 animate-fadeInUp animate-delay-1">
+                    <div class="food-item">
+                        <img src="https://i.pinimg.com/736x/e8/dc/7f/e8dc7f0b59b8602ba30621dee3c6291c.jpg" alt="Masala Dosa">
+                        <div class="food-overlay">
+                            <h4 class="text-white">Masala Dosa</h4>
+                            <p class="text-white mb-0">~320 kcal per serving</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 animate-fadeInUp animate-delay-2">
+                    <div class="food-item">
+                        <img src="https://www.licious.in/blog/wp-content/uploads/2020/10/butter-chicken--600x600.jpg" alt="Butter Chicken">
+                        <div class="food-overlay">
+                            <h4 class="text-white">Butter Chicken</h4>
+                            <p class="text-white mb-0">~550 kcal per serving</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 animate-fadeInUp animate-delay-1">
+                    <div class="food-item">
+                        <img src="https://cdn.pixabay.com/photo/2024/01/29/21/50/ai-generated-8540840_640.jpg" alt="Samosa">
+                        <div class="food-overlay">
+                            <h4 class="text-white">Samosa</h4>
+                            <p class="text-white mb-0">~260 kcal per piece</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 animate-fadeInUp animate-delay-2">
+                    <div class="food-item">
+                        <img src="https://thumbs.dreamstime.com/b/pani-puri-indian-chat-item-pani-puri-indian-chat-item-served-terracotta-bowls-plate-114920333.jpg" alt="Pani Puri">
+                        <div class="food-overlay">
+                            <h4 class="text-white">Pani Puri</h4>
+                            <p class="text-white mb-0">~150 kcal per 5 pieces</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 animate-fadeInUp animate-delay-3">
+                    <div class="food-item">
+                        <img src="https://media-cdn.tripadvisor.com/media/photo-s/23/f1/d7/3a/mutton-rogan-josh.jpg" alt="Rogan Josh">
+                        <div class="food-overlay">
+                            <h4 class="text-white">Rogan Josh</h4>
+                            <p class="text-white mb-0">~400 kcal per serving</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="section bg-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="demo-container p-4">
+                        <h2 class="fw-bold mb-4">Try Our Live Demo</h2>
+                        <p class="lead mb-4">Upload an image of your Indian food and see NutriScanAI in action!</p>
+                        <div class="mb-4">
+                            <div class="input-group mb-3">
+                                <input type="file" class="form-control" id="food-upload" accept="image/*">
+                                <button class="btn btn-outline-secondary" type="button" id="upload-btn">
+                                    <i class="fas fa-upload me-2"></i>Upload
+                                </button>
+                            </div>
+                            <small class="text-muted">Try with images of Indian dishes for best results</small>
+                        </div>
+                        <div class="nutrition-results d-none">
+                            <h4 class="mb-3">Nutritional Analysis</h4>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <div class="nutrition-card">
+                                        <div class="nutrition-value">450</div>
+                                        <div class="nutrition-label">Calories</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="nutrition-card">
+                                        <div class="nutrition-value">22g</div>
+                                        <div class="nutrition-label">Protein</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="nutrition-card">
+                                        <div class="nutrition-value">55g</div>
+                                        <div class="nutrition-label">Carbs</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="nutrition-card">
+                                        <div class="nutrition-value">18g</div>
+                                        <div class="nutrition-label">Fats</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ps-lg-5 mt-5 mt-lg-0">
+                        <h2 class="fw-bold mb-4">Advanced AI for Indian Cuisine</h2>
+                        <p class="lead mb-4">Our specialized machine learning model is trained on thousands of Indian food images to provide the most accurate nutritional analysis.</p>
+                        <div class="feature-list">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5>Regional Variations</h5>
+                                    <p class="text-muted mb-0">Understands differences between Punjabi, South Indian, Bengali and other regional cuisines.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5>Home-cooked Meals</h5>
+                                    <p class="text-muted mb-0">Recognizes home-style Indian cooking, not just restaurant dishes.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5>Festive Specials</h5>
+                                    <p class="text-muted mb-0">Analyzes festival foods like Diwali sweets and Holi snacks.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg mt-3">
+                            <i class="fas fa-rocket me-2"></i>Get Full Access
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="section" style="background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5 section-title text-white">What Our Users Say</h2>
+                <p class="lead text-white-50">Join thousands of Indians making better food choices</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 mb-4 animate-fadeInUp">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="rounded-circle me-3" width="60" alt="User">
+                            <div>
+                                <h5 class="mb-0">Gautham Prabu</h5>
+                                <small class="text-muted">Maddur | Weight Loss Journey</small>
+                            </div>
+                        </div>
+                        <div class="rating mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p>"As someone trying to lose weight while enjoying Indian food, NutriScanAI has been a game-changer. I can finally understand the nutrition in my homemade dal and roti!"</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 animate-fadeInUp animate-delay-1">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" class="rounded-circle me-3" width="60" alt="User">
+                            <div>
+                                <h5 class="mb-0">Likith Surya</h5>
+                                <small class="text-muted">Mysuru | Fitness Enthusiast</small>
+                            </div>
+                        </div>
+                        <div class="rating mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p>"The accuracy for Indian dishes is unmatched. It even recognizes regional variations between Gujarati and Punjabi thalis. Perfect for tracking my macros!"</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 animate-fadeInUp animate-delay-2">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="rounded-circle me-3" width="60" alt="User">
+                            <div>
+                                <h5 class="mb-0">Gagan Gowda</h5>
+                                <small class="text-muted">KR Nagar | Diabetic Patient</small>
+                            </div>
+                        </div>
+                        <div class="rating mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star-half-alt text-warning"></i>
+                        </div>
+                        <p>"Managing diabetes is tough with Indian food. NutriScanAI helps me understand carb counts in South Indian meals like idli and dosa. My doctor is impressed!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" style="background: var(--gradient-4);">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="display-4 fw-bold mb-4 text-white">Ready to Transform Your Indian Diet?</h2>
+                    <p class="lead mb-5 text-white">Join thousands of Indians who are making smarter food choices without sacrificing taste or tradition.</p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+                            <i class="fas fa-user-plus me-2"></i>Sign Up Free
+                        </a>
+                        <a href="#demo" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
+                            <i class="fas fa-play-circle me-2"></i>Try Demo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4 class="fw-bold mb-4">
+                        <i class="fas fa-utensils me-2"></i>NutriScan<span style="color: var(--indian-saffron);">AI</span>
+                    </h4>
+                    <p>AI-powered nutrition analysis specialized for Indian cuisine. Making healthy eating simple and accessible for all Indians.</p>
+                    <div class="social-icons mt-4">
+                        <a href="https://www.facebook.com/" class="text-white me-3 hvr-grow"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="https://x.com/" class="text-white me-3 hvr-grow"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="https://www.instagram.com/" class="text-white me-3 hvr-grow"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="https://in.linkedin.com/" class="text-white hvr-grow"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="fw-bold mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#features" class="text-white-50 text-decoration-none hvr-underline-from-center">Features</a></li>
+                        <li class="mb-2"><a href="#how-it-works" class="text-white-50 text-decoration-none hvr-underline-from-center">How It Works</a></li>
+                        <li class="mb-2"><a href="#demo" class="text-white-50 text-decoration-none hvr-underline-from-center">Live Demo</a></li>
+                        <li class="mb-2"><a href="#testimonials" class="text-white-50 text-decoration-none hvr-underline-from-center">Testimonials</a></li>
+                        <li><a href="{{ url_for('register') }}" class="text-white-50 text-decoration-none hvr-underline-from-center">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="fw-bold mb-4">Support</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hvr-underline-from-center">FAQ</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hvr-underline-from-center">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hvr-underline-from-center">Terms</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none hvr-underline-from-center">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="fw-bold mb-4">Newsletter</h5>
+                    <p class="text-white-50">Subscribe for nutrition tips and Indian diet updates</p>
+                    <form class="mb-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Your email">
+                            <button class="btn btn-primary" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr class="my-5 bg-secondary">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2023 NutriScanAI. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">Made with <i class="fas fa-heart text-danger"></i> in India</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 100) {
+                $('.navbar').addClass('scrolled');
+            } else {
+                $('.navbar').removeClass('scrolled');
+            }
+        });
+
+        // Counter animation
+        $('.counter-number').counterUp({
+            delay: 10,
+            time: 2000
+        });
+
+        // Smooth scrolling
+        $('a[href*="#"]').on('click', function(e) {
+            e.preventDefault();
+            $('html, body').animate(
+                {
+                    scrollTop: $($(this).attr('href')).offset().top - 70,
+                },
+                500,
+                'linear'
+            );
+            
+            // Update active nav link
+            $('.nav-link').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        // Demo upload button
+        $('#upload-btn').click(function() {
+            if ($('#food-upload').val()) {
+                $('.nutrition-results').removeClass('d-none');
+                
+                // Add animation to nutrition cards
+                $('.nutrition-card').each(function(index) {
+                    $(this).css('animation-delay', (index * 0.1) + 's').addClass('animate__animated animate__fadeInUp');
+                });
+            }
+        });
+
+        // Animate elements when they come into view
+        $(document).ready(function() {
+            // Initialize waypoints for animations
+            $('.animate-fadeInUp').waypoint(function(direction) {
+                if (direction === 'down') {
+                    $(this.element).addClass('animate__animated animate__fadeInUp');
+                }
+            }, {
+                offset: '80%'
+            });
+            
+            $('.animate-fadeInLeft').waypoint(function(direction) {
+                if (direction === 'down') {
+                    $(this.element).addClass('animate__animated animate__fadeInLeft');
+                }
+            }, {
+                offset: '80%'
+            });
+            
+            $('.animate-fadeInRight').waypoint(function(direction) {
+                if (direction === 'down') {
+                    $(this.element).addClass('animate__animated animate__fadeInRight');
+                }
+            }, {
+                offset: '80%'
+            });
+        });
+
+        // Add hover effect to cards
+        $('.feature-card, .step-card, .testimonial-card, .food-item').hover(
+            function() {
+                $(this).addClass('animate__animated animate__pulse');
+            },
+            function() {
+                $(this).removeClass('animate__animated animate__pulse');
+            }
+        );
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only select counters with data-target attribute
+            const counters = document.querySelectorAll('.counter-number[data-target]');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(document.getElementById('counter-section'));
+
+            function animateCounters() {
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const suffix = counter.getAttribute('data-suffix') || '';
+                    let current = 0;
+                    const duration = 2000; // 2 seconds
+                    const increment = target / (duration / 16); // 60fps
+                    
+                    const updateCounter = () => {
+                        current += increment;
+                        if (current < target) {
+                            counter.textContent = Math.floor(current) + suffix;
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target + suffix;
+                        }
+                    };
+                    
+                    updateCounter();
+                });
+            }
+        });
+    </script>
+       
+</body>
+</html>

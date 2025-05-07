@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid nutrition-calculator">
+    <div class="row g-4">
+        <!-- Main Content -->
+        <div class="col-xl-8 mx-auto">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header animate__animated animate__fadeIn">
+                <h1 class="display-6 fw-bold text-gradient-primary mb-2">Nutrition Impact Calculator</h1>
+                <p class="text-muted mb-0">Detailed analysis of your food's nutritional impact</p>
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="row g-4">
+                <!-- User Metrics Card -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white border-bottom-0">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle fs-4 text-primary me-2"></i>
+                                <h5 class="mb-0 fw-semibold">Your Health Metrics</h5>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <!-- BMI Indicator -->
+                                <div class="col-md-6">
+                                    <div class="metric-card bg-soft-primary rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <p class="text-muted small mb-1">Body Mass Index</p>
+                                                <h3 class="fw-bold mb-0">{{ "%.1f"|format(user.bmi) }}</h3>
+                                                <span class="badge {{ user.bmi_class }} rounded-pill mt-2">{{ user.bmi_category }}</span>
+                                            </div>
+                                            <div class="metric-icon bg-primary bg-opacity-10 rounded-circle p-2">
+                                                <i class="bi bi-speedometer2 text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Maintenance Calories -->
+                                <div class="col-md-6">
+                                    <div class="metric-card bg-soft-info rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <p class="text-muted small mb-1">Maintenance Calories</p>
+                                                <h3 class="fw-bold mb-0">{{ "%.0f"|format(user.tdee) }} <small class="text-muted fs-6">kcal/day</small></h3>
+                                            </div>
+                                            <div class="metric-icon bg-info bg-opacity-10 rounded-circle p-2">
+                                                <i class="bi bi-fire text-info"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Food Impact Section -->
+                            <div class="metric-card bg-white border rounded-3 p-3 mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0 fw-semibold"><i class="bi bi-nutrition me-2"></i>Meal Impact</h6>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">{{ "%.1f"|format(daily_percent) }}% of daily</span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small">Consumed</span>
+                                    <span class="fw-semibold">{{ nutrition.calories }} kcal</span>
+                                </div>
+                                
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-gradient-primary" 
+                                         style="width: {{ daily_percent }}%"
+                                         role="progressbar"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span class="text-muted small">Remaining</span>
+                                    <span class="fw-semibold">{{ "%.0f"|format(remaining) }} kcal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Weight Management Card -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white border-bottom-0">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-graph-up fs-4 text-success me-2"></i>
+                                <h5 class="mb-0 fw-semibold">Weight Management</h5>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <!-- Weight Loss -->
+                                <div class="col-md-6">
+                                    <div class="metric-card bg-soft-success rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="fw-semibold text-success mb-3"><i class="bi bi-arrow-down me-2"></i>Weight Loss</h6>
+                                                <div class="mb-2">
+                                                    <p class="text-muted small mb-1">Aggressive (500 kcal deficit)</p>
+                                                    <p class="fw-bold mb-0">{{ "%.0f"|format(user.tdee - 500) }} kcal/day</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-muted small mb-1">Mild (300 kcal deficit)</p>
+                                                    <p class="fw-bold mb-0">{{ "%.0f"|format(user.tdee - 300) }} kcal/day</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Weight Gain -->
+                                <div class="col-md-6">
+                                    <div class="metric-card bg-soft-warning rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="fw-semibold text-warning mb-3"><i class="bi bi-arrow-up me-2"></i>Weight Gain</h6>
+                                                <div class="mb-2">
+                                                    <p class="text-muted small mb-1">Mild (300 kcal surplus)</p>
+                                                    <p class="fw-bold mb-0">{{ "%.0f"|format(user.tdee + 300) }} kcal/day</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-muted small mb-1">Aggressive (500 kcal surplus)</p>
+                                                    <p class="fw-bold mb-0">{{ "%.0f"|format(user.tdee + 500) }} kcal/day</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Protein Recommendation -->
+                            <div class="metric-card bg-white border rounded-3 p-3 mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0 fw-semibold"><i class="bi bi-droplet me-2"></i>Protein Recommendation</h6>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">{{ "%.1f"|format(protein_needs) }}g/day</span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small">This meal provides</span>
+                                    <span class="fw-semibold">{{ "%.1f"|format(nutrition.protein) }}g protein</span>
+                                </div>
+                                
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-gradient-success" 
+                                         style="width: {{ (nutrition.protein/protein_needs)*100 }}%"
+                                         role="progressbar"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span class="text-muted small">Daily fulfillment</span>
+                                    <span class="fw-semibold">{{ "%.1f"|format((nutrition.protein/protein_needs)*100) }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-4 animate__animated animate__fadeInUp">
+                <a href="{{ url_for('nutrition') }}" class="btn btn-outline-primary btn-lg px-4 rounded-pill">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Nutrition
+                </a>
+                <a href="{{ url_for('prediction') }}" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-plus-circle me-2"></i>Analyze Another Food
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #ebf1ff;
+        --secondary: #3a0ca3;
+        --success: #4cc9f0;
+        --success-light: #e8f9ff;
+        --warning: #f8961e;
+        --warning-light: #fff4e8;
+        --danger: #f72585;
+        --danger-light: #ffebf3;
+        --info: #3a86ff;
+        --info-light: #e6f0ff;
+    }
+
+    .nutrition-calculator {
+        padding: 2rem 0;
+        background-color: #f8f9fa;
+    }
+
+    .text-gradient-primary {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+
+    .card {
+        border-radius: 12px;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    .card-header {
+        padding: 1.25rem 1.5rem;
+        background-color: white;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .metric-card {
+        transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05) !important;
+    }
+
+    .metric-icon {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bg-soft-primary { background-color: var(--primary-light); }
+    .bg-soft-success { background-color: var(--success-light); }
+    .bg-soft-warning { background-color: var(--warning-light); }
+    .bg-soft-danger { background-color: var(--danger-light); }
+    .bg-soft-info { background-color: var(--info-light); }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(90deg, var(--success), #3a86ff);
+    }
+
+    .progress {
+        border-radius: 4px;
+    }
+
+    .progress-bar {
+        border-radius: 4px;
+    }
+
+    .badge.Underweight { background-color: #ffc107; color: #212529; }
+    .badge.Normal { background-color: #28a745; color: white; }
+    .badge.Overweight { background-color: #fd7e14; color: white; }
+    .badge.Obese { background-color: #dc3545; color: white; }
+
+    .btn-primary {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border: none;
+    }
+
+    .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-light);
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header {
+            text-align: center;
+        }
+        
+        .btn-lg {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<!-- Include Animate.css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

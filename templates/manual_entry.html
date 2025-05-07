@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h4>Manual Nutrition Entry</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">We couldn't find nutrition data for <strong>{{ food_item }}</strong>. Please enter the values manually:</p>
+                    
+                    <form method="POST" action="{{ url_for('tracking') }}">
+                        <input type="hidden" name="manual_entry" value="true">
+                        <input type="hidden" name="food_item" value="{{ food_item }}">
+                        <input type="hidden" name="quantity" value="{{ quantity }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Calories</label>
+                            <input type="number" name="calories" class="form-control" required min="0" step="0.1">
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Protein (g)</label>
+                                <input type="number" name="protein" class="form-control" required min="0" step="0.1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Carbs (g)</label>
+                                <input type="number" name="carbs" class="form-control" required min="0" step="0.1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Fats (g)</label>
+                                <input type="number" name="fats" class="form-control" required min="0" step="0.1">
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Submit
+                            </button>
+                            <a href="{{ url_for('tracking') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

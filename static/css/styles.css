@@ -1,0 +1,70 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.nutrition-card {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.nutrition-card:hover {
+    transform: translateY(-5px);
+}
+
+.nutrition-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e88e5;
+}
+
+.food-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress {
+    height: 25px;
+}
+
+.progress-bar {
+    font-size: 0.9rem;
+    line-height: 25px;
+}
+
+.upload-container {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-container:hover {
+    border-color: #1e88e5;
+    background-color: #f8fbff;
+}
+
+.btn-analyze {
+    background-color: #1e88e5;
+    border: none;
+    padding: 10px 25px;
+    font-weight: 500;
+}
+
+.btn-analyze:hover {
+    background-color: #1565c0;
+}
+
+@media (max-width: 768px) {
+    .nutrition-card {
+        padding: 15px;
+    }
+}

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - NutriScan AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #FF5A5F; /* Vibrant coral */
+            --secondary-color: #00A699; /* Teal */
+            --accent-color: #FC642D; /* Orange */
+            --light-color: #F7F7F7; /* Light gray */
+            --dark-color: #484848; /* Dark gray */
+            --indian-saffron: #FF9933; /* Saffron */
+            --indian-green: #138808; /* India green */
+            --indian-blue: #000080; /* Navy blue */
+            --gradient-1: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            --gradient-2: linear-gradient(135deg, var(--secondary-color) 0%, var(--indian-green) 100%);
+            --gradient-3: linear-gradient(135deg, var(--indian-saffron) 0%, #FFD700 100%);
+            --gradient-4: linear-gradient(135deg, var(--indian-blue) 0%, #4B0082 100%);
+            --shadow-sm: 0 5px 15px rgba(0,0,0,0.08);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.12);
+            --shadow-lg: 0 15px 35px rgba(0,0,0,0.15);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            color: var(--dark-color);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Background pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsIDkwLCA5NSwgMC4wNSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4=');
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        /* Register container */
+        .register-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Register card */
+        .register-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+            border: none;
+        }
+        
+        .register-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Register header */
+        .register-header {
+            background: var(--gradient-1);
+            padding: 3rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+        
+        /* Logo */
+        .logo-circle {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+        }
+        
+        .logo-circle:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo-icon {
+            font-size: 2.8rem;
+            color: white;
+        }
+        
+        .register-title {
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .register-subtitle {
+            opacity: 0.9;
+            font-weight: 400;
+            font-size: 1.1rem;
+        }
+        
+        /* Register body */
+        .register-body {
+            padding: 3rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        
+        /* Form styling */
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        .form-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            z-index: 10;
+            transition: var(--transition);
+        }
+        
+        .form-control {
+            padding-left: 55px;
+            height: 55px;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: rgba(245, 246, 250, 0.8);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(255, 90, 95, 0.15);
+            background-color: white;
+        }
+        
+        /* Password toggle */
+        .toggle-password {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .toggle-password:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Buttons */
+        .btn-register {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            background: var(--gradient-1);
+            border: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            margin-top: 1rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            color: white;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(255, 90, 95, 0.3);
+        }
+        
+        .btn-face-register {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            background: white;
+            margin-top: 1rem;
+        }
+        
+        .btn-face-register:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(255, 90, 95, 0.2);
+        }
+        
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+        }
+        
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 15px;
+        }
+        
+        .divider-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        /* Links */
+        .login-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            position: relative;
+        }
+        
+        .login-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: var(--transition);
+        }
+        
+        .login-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        /* Feature highlights */
+        .features-container {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,245,245,0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+            border-left: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-icon {
+            background: var(--gradient-1);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .feature-text h4 {
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .feature-text p {
+            color: var(--dark-color);
+            opacity: 0.8;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        
+        /* Health info section */
+        .health-info {
+            background: rgba(0, 166, 153, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(0, 166, 153, 0.1);
+            transition: var(--transition);
+        }
+        
+        .health-info:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .health-info-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .health-info-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-2);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .health-info-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 0;
+        }
+        
+        /* Face registration section */
+        .face-registration {
+            background: rgba(252, 100, 45, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(252, 100, 45, 0.1);
+            transition: var(--transition);
+        }
+        
+        .face-registration:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .face-preview {
+            width: 100%;
+            height: 200px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .face-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .face-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(255, 90, 95, 0.3);
+            border-radius: 12px;
+            pointer-events: none;
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        .delay-5 { animation-delay: 1.0s; }
+        
+        /* Input error animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        /* Password strength */
+        .password-strength {
+            height: 5px;
+            background: #eee;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .features-container {
+                display: none;
+            }
+            
+            .register-card {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .register-header {
+                padding: 2rem;
+            }
+            
+            .register-body {
+                padding: 2rem;
+            }
+            
+            .logo-circle {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .logo-icon {
+                font-size: 2.2rem;
+            }
+            
+            .register-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background pattern -->
+    <div class="bg-pattern"></div>
+    
+    <!-- Register card -->
+    <div class="container register-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card register-card">
+                    <div class="row g-0">
+                        <div class="col-lg-6">
+                            <div class="card-header register-header">
+                                <div class="logo-circle">
+                                    <i class="fas fa-utensils logo-icon"></i>
+                                </div>
+                                <h2 class="register-title animate__animated animate__fadeInDown">Join NutriScan AI</h2>
+                                <p class="register-subtitle animate__animated animate__fadeIn animate__delay-1s">Create your account to get started</p>
+                            </div>
+                            <div class="card-body register-body">
+                                <form id="registerForm" method="POST" action="{{ url_for('register') }}">
+                                    <!-- Personal Information -->
+                                    <div class="form-group fade-in delay-1">
+                                        <i class="fas fa-user form-icon"></i>
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" required>
+                                    </div>
+                                    
+                                    <div class="form-group fade-in delay-1">
+                                        <i class="fas fa-envelope form-icon"></i>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email address" required>
+                                    </div>
+                                    
+                                    <div class="form-group fade-in delay-2">
+                                        <i class="fas fa-lock form-icon"></i>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Create password" required>
+                                        <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
+                                        <div class="password-strength mt-2">
+                                            <div class="password-strength-bar"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Health Information Section -->
+                                    <div class="health-info fade-in delay-3">
+                                        <div class="health-info-header">
+                                            <div class="health-info-icon">
+                                                <i class="fas fa-heartbeat"></i>
+                                            </div>
+                                            <h5 class="health-info-title">Health Profile</h5>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="age">Age</label>
+                                                    <input type="number" class="form-control" id="age" name="age" min="10" max="120" value="30" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="gender">Gender</label>
+                                                    <select class="form-control" id="gender" name="gender" required>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="height">Height (cm)</label>
+                                                    <input type="number" class="form-control" id="height" name="height" min="100" max="250" value="170" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="weight">Weight (kg)</label>
+                                                    <input type="number" class="form-control" id="weight" name="weight" min="30" max="300" value="70" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mt-3">
+                                            <label for="activity">Activity Level</label>
+                                            <select class="form-control" id="activity" name="activity" required>
+                                                <option value="Sedentary">Sedentary (little or no exercise)</option>
+                                                <option value="Lightly active">Lightly active (light exercise 1-3 days/week)</option>
+                                                <option value="Moderately active">Moderately active (moderate exercise 3-5 days/week)</option>
+                                                <option value="Very active">Very active (hard exercise 6-7 days/week)</option>
+                                                <option value="Extra active">Extra active (very hard exercise & physical job)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+                                    <!-- Terms and Submit -->
+                                    <div class="form-check fade-in delay-5">
+                                        <input class="form-check-input" type="checkbox" id="terms" required>
+                                        <label class="form-check-label" for="terms">
+                                            I agree to the <a href="#" class="login-link">Terms of Service</a> and <a href="#" class="login-link">Privacy Policy</a>
+                                        </label>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-register fade-in delay-5">
+                                        <i class="fas fa-user-plus me-2"></i> Create Account
+                                    </button>
+                                </form>
+                                
+                                <div class="text-center mt-4 fade-in delay-5">
+                                    <p>Already have an account? <a href="{{ url_for('login') }}" class="login-link">Sign in here</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 d-none d-lg-block">
+                            <div class="features-container">
+                                <h3 class="mb-4">Why Join NutriScan AI?</h3>
+                                
+                                <div class="feature-item fade-in delay-1">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        <h4>Instant Analysis</h4>
+                                        <p>Get detailed nutritional information for any Indian dish in seconds using our advanced AI technology.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item fade-in delay-2">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        <h4>Comprehensive Database</h4>
+                                        <p>Access nutritional data for over 10,000 Indian dishes and ingredients from all regions of India.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item fade-in delay-3">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        <h4>Personalized Tracking</h4>
+                                        <p>Monitor your daily nutritional intake and receive personalized recommendations based on your health goals.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item fade-in delay-4">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        <h4>Mobile Friendly</h4>
+                                        <p>Access your nutrition data anywhere, anytime with our fully responsive web application.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item fade-in delay-5">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-face-smile"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        <h4>Face Recognition</h4>
+                                        <p>Secure, password-free login with our advanced facial recognition technology.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize animations
+            const fadeIns = document.querySelectorAll('.fade-in');
+            fadeIns.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.animation = `fadeIn 1s ease-out ${index * 0.2}s forwards`;
+                }, 100);
+            });
+            
+            // Password toggle visibility
+            const togglePassword = document.getElementById('togglePassword');
+            const password = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+            
+            // Password strength indicator
+            password.addEventListener('input', function() {
+                const strengthBar = document.querySelector('.password-strength-bar');
+                const password = this.value;
+                let strength = 0;
+                
+                // Length check
+                if (password.length > 0) strength += 10;
+                if (password.length >= 8) strength += 20;
+                if (password.length >= 12) strength += 20;
+                
+                // Character variety checks
+                if (/[A-Z]/.test(password)) strength += 15;
+                if (/[0-9]/.test(password)) strength += 15;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+                
+                // Update progress bar
+                strengthBar.style.width = strength + '%';
+                
+                // Change color based on strength
+                if (strength < 40) {
+                    strengthBar.style.backgroundColor = '#ff7675';
+                } else if (strength < 70) {
+                    strengthBar.style.backgroundColor = '#fdcb6e';
+                } else {
+                    strengthBar.style.backgroundColor = '#00b894';
+                }
+            });
+            
+            // Face Registration
+            const video = document.getElementById('register-video');
+            const captureBtn = document.getElementById('capture-face-btn');
+            const resultDiv = document.getElementById('face-capture-result');
+            const faceMessage = document.getElementById('face-capture-message');
+            const faceDataInput = document.getElementById('face-data');
+            
+            if (video && captureBtn) {
+                // Access camera with animation
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    // Show loading state
+                    captureBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Loading Camera...';
+                    captureBtn.disabled = true;
+                    
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                        .then(function(stream) {
+                            video.srcObject = stream;
+                            
+                            // Add animation when camera is ready
+                            $(video).hide().fadeIn(500, function() {
+                                // Enable capture button with animation
+                                captureBtn.innerHTML = '<i class="fas fa-camera me-2"></i> Capture Face';
+                                captureBtn.disabled = false;
+                                $(captureBtn).addClass('animate__animated animate__pulse');
+                            });
+                        })
+                        .catch(function(error) {
+                            faceMessage.textContent = 'Camera access denied: ' + error.message;
+                            resultDiv.className = 'alert alert-danger';
+                            resultDiv.style.display = 'block';
+                            captureBtn.disabled = true;
+                            captureBtn.innerHTML = '<i class="fas fa-camera me-2"></i> Camera Error';
+                        });
+                } else {
+                    faceMessage.textContent = 'Camera API not supported in this browser';
+                    resultDiv.className = 'alert alert-danger';
+                    resultDiv.style.display = 'block';
+                    captureBtn.disabled = true;
+                }
+                
+                // Capture face with animation
+                captureBtn.addEventListener('click', function() {
+                    // Create canvas element
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const context = canvas.getContext('2d');
+                    
+                    // Draw current video frame to canvas
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // Convert to base64
+                    const imageData = canvas.toDataURL('image/jpeg');
+                    
+                    // Show loading state with animation
+                    captureBtn.disabled = true;
+                    captureBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Processing...';
+                    $(captureBtn).removeClass('animate__pulse');
+                    
+                    // Simulate face detection processing
+                    setTimeout(() => {
+                        // Store the image data
+                        faceDataInput.value = imageData;
+                        
+                        // Show success with animation
+                        faceMessage.textContent = 'Face captured successfully! You can now login with face recognition.';
+                        resultDiv.className = 'alert alert-success';
+                        resultDiv.style.display = 'block';
+                        
+                        // Change button to success state
+                        captureBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Face Registered';
+                        captureBtn.className = 'btn btn-register';
+                        
+                        // Add confetti animation
+                        addConfetti();
+                    }, 1500);
+                });
+            }
+            
+            // Confetti animation
+            function addConfetti() {
+                const facePreview = document.querySelector('.face-preview');
+                const colors = ['#FF5A5F', '#00A699', '#FC642D', '#FF9933', '#000080'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'absolute';
+                    confetti.style.width = '8px';
+                    confetti.style.height = '8px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.opacity = '0.8';
+                    confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    confetti.style.animation = 'confetti-fall ' + (Math.random() * 3 + 2) + 's linear forwards';
+                    
+                    facePreview.appendChild(confetti);
+                    
+                    // Remove after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }
+            }
+            
+            // Form validation
+            const registerForm = document.getElementById('registerForm');
+            
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                let isValid = true;
+                
+                if (name.length < 3) {
+                    animateInputError(document.getElementById('name'));
+                    isValid = false;
+                }
+                
+                if (!email.includes('@') || email.length < 5) {
+                    animateInputError(document.getElementById('email'));
+                    isValid = false;
+                }
+                
+                if (password.length < 6) {
+                    animateInputError(document.getElementById('password'));
+                    isValid = false;
+                }
+                
+                if (!document.getElementById('terms').checked) {
+                    alert('Please agree to the Terms of Service and Privacy Policy');
+                    isValid = false;
+                }
+                
+                if (isValid) {
+                    const registerButton = document.querySelector('.btn-register');
+                    const originalContent = registerButton.innerHTML;
+                    
+                    registerButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Creating Account...';
+                    registerButton.disabled = true;
+                    
+                    // Add a success animation before submit
+                    setTimeout(() => {
+                        registerButton.innerHTML = '<i class="fas fa-check-circle me-2"></i> Success!';
+                        registerButton.style.background = 'var(--gradient-2)';
+                        
+                        setTimeout(() => {
+                            this.submit();
+                        }, 800);
+                    }, 1500);
+                }
+            });
+            
+            function animateInputError(input) {
+                input.style.borderColor = '#ff7675';
+                input.classList.add('shake');
+                
+                // Add pulsing red border
+                input.animate([
+                    { boxShadow: '0 0 0 0 rgba(255, 118, 117, 0.7)' },
+                    { boxShadow: '0 0 0 10px rgba(255, 118, 117, 0)' }
+                ], {
+                    duration: 1000,
+                    iterations: 1
+                });
+                
+                input.addEventListener('animationend', function() {
+                    this.classList.remove('shake');
+                }, { once: true });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '';
+                }, { once: true });
+            }
+            
+            // Add hover effects to form inputs
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('mouseenter', () => {
+                    input.style.borderColor = 'rgba(255, 90, 95, 0.3)';
+                });
+                
+                input.addEventListener('mouseleave', () => {
+                    if (!input.matches(':focus')) {
+                        input.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                    }
+                });
+            });
+            
+            // Animate logo on load
+            setTimeout(() => {
+                const logo = document.querySelector('.logo-circle');
+                logo.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    logo.style.transform = 'scale(1)';
+                }, 500);
+            }, 1000);
+            
+            // Confetti animation keyframes
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes confetti-fall {
+                    0% { 
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 0.8;
+                    }
+                    100% { 
+                        transform: translateY(300px) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,987 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="hero-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8 text-white">
+                    <h1 class="display-4 fw-bold mb-3">{{ plan_title }}</h1>
+                    <p class="lead mb-4">Your personalized nutrition plan designed for {{ goal|replace('_', ' ')|title() }} success</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-white text-primary fs-6 me-3">{{ goal|replace('_', ' ')|title() }} Plan</span>
+                        <span class="text-white-50"><i class="fas fa-bolt me-1"></i> {{ target_calories }} daily calories</span>
+                    </div>
+                </div>
+                <div class="col-lg-4 d-none d-lg-block">
+                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Healthy Food" class="img-fluid rounded shadow" style="border: 4px solid rgba(255,255,255,0.2);">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <!-- Today's Recommendation Section -->
+        <div class="card mb-5 border-0 shadow-lg overflow-hidden">
+            <div class="card-header py-4" style="background: linear-gradient(135deg, #6c63ff 0%, #4a3fba 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0 text-white"><i class="fas fa-calendar-day me-3"></i>Today's Meal Plan</h2>
+                    <span class="badge bg-white text-primary fs-6 px-3 py-2">Daily Customization</span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="p-4">
+                    <p class="text-muted mb-4">Select your meals for today based on your calorie needs and preferences.</p>
+                    
+                    <form id="todayMealForm">
+                        <!-- Breakfast Selection -->
+                        <div class="meal-section mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h3 class="mb-0"><i class="fas fa-sun text-warning me-2"></i>Breakfast</h3>
+                                    <small class="text-muted">Start your day right with a nutritious breakfast</small>
+                                </div>
+                                <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);">{{ meal_calories.breakfast|round|int }} calories</span>
+                            </div>
+                            <div class="row g-4">
+                                {% for food in breakfast_options[:4] %}
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="meal-card p-3 rounded-3 shadow-sm h-100" data-meal-type="breakfast">
+                                        <div class="form-check m-0 h-100">
+                                            <input class="form-check-input" type="radio" name="breakfast" id="breakfast{{ loop.index }}" value="{{ food }}" {% if food == today_breakfast %}checked{% endif %}>
+                                            <label class="form-check-label w-100 h-100 d-flex flex-column" for="breakfast{{ loop.index }}">
+                                                <div class="meal-image mb-3 rounded" style="background-image: url('https://source.unsplash.com/random/300x200/?{{ food }}'); height: 120px; background-size: cover; background-position: center;"></div>
+                                                <h5 class="mb-2">{{ food.replace('_', ' ').title() }}</h5>
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between small text-muted mb-2">
+                                                        <span><i class="fas fa-fire me-1"></i> {{ nutrition_data[food].calories }} cal</span>
+                                                        <span><i class="fas fa-dumbbell me-1"></i> {{ nutrition_data[food].protein }}g protein</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ (nutrition_data[food].protein / 30) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Lunch Selection -->
+                        <div class="meal-section mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h3 class="mb-0"><i class="fas fa-utensils text-info me-2"></i>Lunch</h3>
+                                    <small class="text-muted">Energizing meals to power your afternoon</small>
+                                </div>
+                                <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">{{ meal_calories.lunch|round|int }} calories</span>
+                            </div>
+                            <div class="row g-4">
+                                {% for food in main_meal_options[:4] %}
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="meal-card p-3 rounded-3 shadow-sm h-100" data-meal-type="lunch">
+                                        <div class="form-check m-0 h-100">
+                                            <input class="form-check-input" type="radio" name="lunch" id="lunch{{ loop.index }}" value="{{ food }}" {% if food == today_lunch %}checked{% endif %}>
+                                            <label class="form-check-label w-100 h-100 d-flex flex-column" for="lunch{{ loop.index }}">
+                                                <div class="meal-image mb-3 rounded" style="background-image: url('https://source.unsplash.com/random/300x200/?{{ food }}'); height: 120px; background-size: cover; background-position: center;"></div>
+                                                <h5 class="mb-2">{{ food.replace('_', ' ').title() }}</h5>
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between small text-muted mb-2">
+                                                        <span><i class="fas fa-fire me-1"></i> {{ nutrition_data[food].calories }} cal</span>
+                                                        <span><i class="fas fa-dumbbell me-1"></i> {{ nutrition_data[food].protein }}g protein</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ (nutrition_data[food].protein / 30) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Morning Snack Selection -->
+                        <div class="meal-section mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h3 class="mb-0"><i class="fas fa-apple-alt text-success me-2"></i>Morning Snack</h3>
+                                    <small class="text-muted">Healthy snacks to keep you going</small>
+                                </div>
+                                <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);">{{ meal_calories.snack1|round|int }} calories</span>
+                            </div>
+                            <div class="row g-4">
+                                {% for food in snack_options[:4] %}
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="meal-card p-3 rounded-3 shadow-sm h-100" data-meal-type="snack1">
+                                        <div class="form-check m-0 h-100">
+                                            <input class="form-check-input" type="radio" name="snack1" id="snack1{{ loop.index }}" value="{{ food }}" {% if food == today_snack1 %}checked{% endif %}>
+                                            <label class="form-check-label w-100 h-100 d-flex flex-column" for="snack1{{ loop.index }}">
+                                                <div class="meal-image mb-3 rounded" style="background-image: url('https://source.unsplash.com/random/300x200/?{{ food }}'); height: 120px; background-size: cover; background-position: center;"></div>
+                                                <h5 class="mb-2">{{ food.replace('_', ' ').title() }}</h5>
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between small text-muted mb-2">
+                                                        <span><i class="fas fa-fire me-1"></i> {{ nutrition_data[food].calories }} cal</span>
+                                                        <span><i class="fas fa-dumbbell me-1"></i> {{ nutrition_data[food].protein }}g protein</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ (nutrition_data[food].protein / 30) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Dinner Selection -->
+                        <div class="meal-section mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h3 class="mb-0"><i class="fas fa-moon text-purple me-2"></i>Dinner</h3>
+                                    <small class="text-muted">Nourishing meals to end your day</small>
+                                </div>
+                                <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);">{{ meal_calories.dinner|round|int }} calories</span>
+                            </div>
+                            <div class="row g-4">
+                                {% for food in main_meal_options[4:8] %}
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="meal-card p-3 rounded-3 shadow-sm h-100" data-meal-type="dinner">
+                                        <div class="form-check m-0 h-100">
+                                            <input class="form-check-input" type="radio" name="dinner" id="dinner{{ loop.index }}" value="{{ food }}" {% if food == today_dinner %}checked{% endif %}>
+                                            <label class="form-check-label w-100 h-100 d-flex flex-column" for="dinner{{ loop.index }}">
+                                                <div class="meal-image mb-3 rounded" style="background-image: url('https://source.unsplash.com/random/300x200/?{{ food }}'); height: 120px; background-size: cover; background-position: center;"></div>
+                                                <h5 class="mb-2">{{ food.replace('_', ' ').title() }}</h5>
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between small text-muted mb-2">
+                                                        <span><i class="fas fa-fire me-1"></i> {{ nutrition_data[food].calories }} cal</span>
+                                                        <span><i class="fas fa-dumbbell me-1"></i> {{ nutrition_data[food].protein }}g protein</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar" role="progressbar" style="width: {{ (nutrition_data[food].protein / 30) * 100 }}%; background-color: #6f42c1;"></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Evening Snack Selection -->
+                        <div class="meal-section mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h3 class="mb-0"><i class="fas fa-moon text-secondary me-2"></i>Evening Snack</h3>
+                                    <small class="text-muted">Light options for evening cravings</small>
+                                </div>
+                                <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">{{ meal_calories.snack2|round|int }} calories</span>
+                            </div>
+                            <div class="row g-4">
+                                {% for food in snack_options[4:8] %}
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="meal-card p-3 rounded-3 shadow-sm h-100" data-meal-type="snack2">
+                                        <div class="form-check m-0 h-100">
+                                            <input class="form-check-input" type="radio" name="snack2" id="snack2{{ loop.index }}" value="{{ food }}" {% if food == today_snack2 %}checked{% endif %}>
+                                            <label class="form-check-label w-100 h-100 d-flex flex-column" for="snack2{{ loop.index }}">
+                                                <div class="meal-image mb-3 rounded" style="background-image: url('https://source.unsplash.com/random/300x200/?{{ food }}'); height: 120px; background-size: cover; background-position: center;"></div>
+                                                <h5 class="mb-2">{{ food.replace('_', ' ').title() }}</h5>
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between small text-muted mb-2">
+                                                        <span><i class="fas fa-fire me-1"></i> {{ nutrition_data[food].calories }} cal</span>
+                                                        <span><i class="fas fa-dumbbell me-1"></i> {{ nutrition_data[food].protein }}g protein</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ (nutrition_data[food].protein / 30) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Dessert Selection -->
+                        <div class="meal-section mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h3 class="mb-0"><i class="fas fa-ice-cream text-warning me-2"></i>Dessert</h3>
+                                    <small class="text-muted">Guilt-free treats to satisfy your sweet tooth</small>
+                                </div>
+                                <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);">{{ meal_calories.dessert|round|int }} calories</span>
+                            </div>
+                            <div class="row g-4">
+                                {% for food in dessert_options[:4] %}
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="meal-card p-3 rounded-3 shadow-sm h-100" data-meal-type="dessert">
+                                        <div class="form-check m-0 h-100">
+                                            <input class="form-check-input" type="radio" name="dessert" id="dessert{{ loop.index }}" value="{{ food }}" {% if food == today_dessert %}checked{% endif %}>
+                                            <label class="form-check-label w-100 h-100 d-flex flex-column" for="dessert{{ loop.index }}">
+                                                <div class="meal-image mb-3 rounded" style="background-image: url('https://source.unsplash.com/random/300x200/?{{ food }}'); height: 120px; background-size: cover; background-position: center;"></div>
+                                                <h5 class="mb-2">{{ food.replace('_', ' ').title() }}</h5>
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between small text-muted mb-2">
+                                                        <span><i class="fas fa-fire me-1"></i> {{ nutrition_data[food].calories }} cal</span>
+                                                        <span><i class="fas fa-dumbbell me-1"></i> {{ nutrition_data[food].protein }}g protein</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ (nutrition_data[food].protein / 30) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-5">
+                            <button type="button" class="btn btn-primary btn-lg px-5 py-3 generate-plan-btn" style="background: linear-gradient(135deg, #6c63ff 0%, #4a3fba 100%); border: none; box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);">
+                                <i class="fas fa-chart-pie me-2"></i>Generate Nutrition Summary
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Nutrition Breakdown (Initially Hidden) -->
+                    <div id="nutritionBreakdown" class="mt-5 p-4 rounded-3 shadow-sm" style="background-color: #f8f9fa; display: none; border-left: 5px solid #6c63ff;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="mb-0"><i class="fas fa-chart-line text-primary me-2"></i>Nutrition Summary</h2>
+                            <div class="d-flex">
+                                <button class="btn btn-outline-primary me-2 save-plan-btn">
+                                    <i class="fas fa-save me-2"></i>Save Plan
+                                </button>
+                                <button class="btn btn-primary print-plan-btn" style="background: linear-gradient(135deg, #6c63ff 0%, #4a3fba 100%); border: none;">
+                                    <i class="fas fa-print me-2"></i>Print
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Total Calories -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body text-center py-4">
+                                        <h5 class="text-muted mb-3">Daily Calorie Progress</h5>
+                                        <div class="position-relative d-inline-block mb-3">
+                                            <svg width="120" height="120" viewBox="0 0 120 120" class="circular-chart">
+                                                <path class="circle-bg" d="M60,5
+                                                    A55,55 0 1,1 60,115
+                                                    A55,55 0 1,1 60,5
+                                                    Z" fill="none" stroke="#eee" stroke-width="8"/>
+                                                <path id="calorieCircle" class="circle-fill" d="M60,5
+                                                    A55,55 0 1,1 60,115
+                                                    A55,55 0 1,1 60,5
+                                                    Z" fill="none" stroke="#6c63ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="0, 345.575"/>
+                                            </svg>
+                                            <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                                <div class="display-4 fw-bold text-gradient mb-0" style="background: linear-gradient(135deg, #6c63ff 0%, #4a3fba 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                                    <span id="totalCalories">0</span>
+                                                </div>
+                                                <small class="text-muted">of {{ target_calories }} cal</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between px-4">
+                                            <small class="text-muted">0%</small>
+                                            <small class="text-muted"><span id="caloriePercentage">0</span>%</small>
+                                            <small class="text-muted">100%</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Macronutrients -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="text-center text-muted mb-3">Macronutrient Distribution</h5>
+                                        <canvas id="macronutrientChart" height="200"></canvas>
+                                        <div class="row text-center mt-3">
+                                            <div class="col-4">
+                                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                                    <span class="bullet me-2" style="background-color: #6c63ff;"></span>
+                                                    <div>
+                                                        <div class="fw-bold"><span id="proteinGrams">0</span>g</div>
+                                                        <small class="text-muted">Protein</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                                    <span class="bullet me-2" style="background-color: #1dd1a1;"></span>
+                                                    <div>
+                                                        <div class="fw-bold"><span id="carbsGrams">0</span>g</div>
+                                                        <small class="text-muted">Carbs</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                                    <span class="bullet me-2" style="background-color: #ff9f43;"></span>
+                                                    <div>
+                                                        <div class="fw-bold"><span id="fatsGrams">0</span>g</div>
+                                                        <small class="text-muted">Fats</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Meal-wise Breakdown -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="fas fa-utensils me-2"></i>Meal Breakdown</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Meal</th>
+                                                <th>Food</th>
+                                                <th>Calories</th>
+                                                <th>Protein</th>
+                                                <th>Carbs</th>
+                                                <th>Fats</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="breakfastRow">
+                                                <td class="fw-bold">Breakfast</td>
+                                                <td id="breakfastFood">-</td>
+                                                <td id="breakfastCalories">0</td>
+                                                <td id="breakfastProtein">0</td>
+                                                <td id="breakfastCarbs">0</td>
+                                                <td id="breakfastFats">0</td>
+                                            </tr>
+                                            <tr id="lunchRow">
+                                                <td class="fw-bold">Lunch</td>
+                                                <td id="lunchFood">-</td>
+                                                <td id="lunchCalories">0</td>
+                                                <td id="lunchProtein">0</td>
+                                                <td id="lunchCarbs">0</td>
+                                                <td id="lunchFats">0</td>
+                                            </tr>
+                                            <tr id="snack1Row">
+                                                <td class="fw-bold">Morning Snack</td>
+                                                <td id="snack1Food">-</td>
+                                                <td id="snack1Calories">0</td>
+                                                <td id="snack1Protein">0</td>
+                                                <td id="snack1Carbs">0</td>
+                                                <td id="snack1Fats">0</td>
+                                            </tr>
+                                            <tr id="dinnerRow">
+                                                <td class="fw-bold">Dinner</td>
+                                                <td id="dinnerFood">-</td>
+                                                <td id="dinnerCalories">0</td>
+                                                <td id="dinnerProtein">0</td>
+                                                <td id="dinnerCarbs">0</td>
+                                                <td id="dinnerFats">0</td>
+                                            </tr>
+                                            <tr id="snack2Row">
+                                                <td class="fw-bold">Evening Snack</td>
+                                                <td id="snack2Food">-</td>
+                                                <td id="snack2Calories">0</td>
+                                                <td id="snack2Protein">0</td>
+                                                <td id="snack2Carbs">0</td>
+                                                <td id="snack2Fats">0</td>
+                                            </tr>
+                                            <tr id="dessertRow">
+                                                <td class="fw-bold">Dessert</td>
+                                                <td id="dessertFood">-</td>
+                                                <td id="dessertCalories">0</td>
+                                                <td id="dessertProtein">0</td>
+                                                <td id="dessertCarbs">0</td>
+                                                <td id="dessertFats">0</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <td colspan="2" class="fw-bold">Total</td>
+                                                <td id="totalCaloriesTable" class="fw-bold">0</td>
+                                                <td id="totalProteinTable" class="fw-bold">0</td>
+                                                <td id="totalCarbsTable" class="fw-bold">0</td>
+                                                <td id="totalFatsTable" class="fw-bold">0</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle me-2"></i> Remember to stay hydrated and adjust portion sizes based on your activity level.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Weekly Meal Plan Section -->
+        <div class="card mb-5 border-0 shadow-lg">
+            <div class="card-header py-4" style="background: linear-gradient(135deg, #6c63ff 0%, #4a3fba 100%);">
+                <h2 class="mb-0 text-white"><i class="fas fa-calendar-week me-3"></i>Weekly Meal Plan</h2>
+            </div>
+            <div class="card-body p-0">
+                <div class="p-4">
+                    <p class="text-muted mb-4">Your personalized meal plan for the week ahead. Click on any day to customize it.</p>
+                    
+                    <div class="row">
+                        {% for day in weekly_plan %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                                <div class="card-header py-3" style="background-color: #f8f9fa;">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">{{ day.day }}</h5>
+                                        <span class="badge bg-primary rounded-pill">{{ (nutrition_data[day.breakfast].calories + nutrition_data[day.lunch].calories + nutrition_data[day.snack1].calories + nutrition_data[day.dinner].calories + nutrition_data[day.snack2].calories + nutrition_data[day.dessert].calories) }} cal</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle me-3" style="background-color: rgba(255,154,158,0.1);">
+                                                    <i class="fas fa-sun text-warning"></i>
+                                                </div>
+                                                <span>Breakfast</span>
+                                            </div>
+                                            <span class="text-end">{{ day.breakfast.replace('_', ' ').title() }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle me-3" style="background-color: rgba(161,196,253,0.1);">
+                                                    <i class="fas fa-utensils text-info"></i>
+                                                </div>
+                                                <span>Lunch</span>
+                                            </div>
+                                            <span class="text-end">{{ day.lunch.replace('_', ' ').title() }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle me-3" style="background-color: rgba(194,233,251,0.1);">
+                                                    <i class="fas fa-apple-alt text-success"></i>
+                                                </div>
+                                                <span>Morning Snack</span>
+                                            </div>
+                                            <span class="text-end">{{ day.snack1.replace('_', ' ').title() }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle me-3" style="background-color: rgba(212,252,121,0.1);">
+                                                    <i class="fas fa-moon text-purple"></i>
+                                                </div>
+                                                <span>Dinner</span>
+                                            </div>
+                                            <span class="text-end">{{ day.dinner.replace('_', ' ').title() }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle me-3" style="background-color: rgba(251,194,235,0.1);">
+                                                    <i class="fas fa-moon text-secondary"></i>
+                                                </div>
+                                                <span>Evening Snack</span>
+                                            </div>
+                                            <span class="text-end">{{ day.snack2.replace('_', ' ').title() }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle me-3" style="background-color: rgba(255,215,0,0.1);">
+                                                    <i class="fas fa-ice-cream text-warning"></i>
+                                                </div>
+                                                <span>Dessert</span>
+                                            </div>
+                                            <span class="text-end">{{ day.dessert.replace('_', ' ').title() }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer bg-white text-end py-3">
+                                    <button class="btn btn-sm btn-outline-primary customize-day-btn" data-day="{{ day.day }}">
+                                        <i class="fas fa-edit me-1"></i> Customize
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tips & Recommendations Section -->
+        <div class="card border-0 shadow-lg mb-5">
+            <div class="card-header py-4" style="background: linear-gradient(135deg, #6c63ff 0%, #4a3fba 100%);">
+                <h2 class="mb-0 text-white"><i class="fas fa-lightbulb me-3"></i>Nutrition Tips</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle-lg mb-3 mx-auto" style="background-color: rgba(108, 99, 255, 0.1);">
+                                    <i class="fas fa-glass-whiskey text-primary"></i>
+                                </div>
+                                <h5>Stay Hydrated</h5>
+                                <p class="text-muted">Drink at least 8 glasses of water daily. Proper hydration supports metabolism and helps control hunger.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle-lg mb-3 mx-auto" style="background-color: rgba(29, 209, 161, 0.1);">
+                                    <i class="fas fa-utensils text-success"></i>
+                                </div>
+                                <h5>Portion Control</h5>
+                                <p class="text-muted">Use smaller plates to naturally reduce portion sizes without feeling deprived.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle-lg mb-3 mx-auto" style="background-color: rgba(255, 159, 67, 0.1);">
+                                    <i class="fas fa-running text-warning"></i>
+                                </div>
+                                <h5>Stay Active</h5>
+                                <p class="text-muted">Combine your meal plan with regular exercise for optimal results.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom Styles */
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .hero-section > .container {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .meal-card {
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+    
+    .meal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        border-color: rgba(108, 99, 255, 0.3) !important;
+    }
+    
+    .meal-card .form-check-input {
+        margin-top: 0;
+        margin-left: 0;
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .meal-card .form-check-input:checked + label {
+        border: 2px solid #6c63ff;
+    }
+    
+    .meal-card .form-check-label {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .icon-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .icon-circle-lg {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+    
+    .bullet {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .circular-chart {
+        display: block;
+        margin: 0 auto;
+    }
+    
+    .circle-bg {
+        fill: none;
+        stroke: #eee;
+        stroke-width: 3.8;
+    }
+    
+    .circle-fill {
+        fill: none;
+        stroke-width: 2.8;
+        stroke-linecap: round;
+        animation: progress 1s ease-out forwards;
+    }
+    
+    .generate-plan-btn {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .generate-plan-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3) !important;
+    }
+    
+    .generate-plan-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%);
+        transform-origin: 50% 50%;
+    }
+    
+    .generate-plan-btn:focus:not(:active)::after {
+        animation: ripple 1s ease-out;
+    }
+    
+    .save-plan-btn, .print-plan-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .save-plan-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.2);
+    }
+    
+    .print-plan-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+    }
+    
+    .customize-day-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .customize-day-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+    }
+    
+    @keyframes ripple {
+        0% {
+            transform: scale(0, 0);
+            opacity: 1;
+        }
+        20% {
+            transform: scale(25, 25);
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            transform: scale(40, 40);
+        }
+    }
+    
+    @keyframes progress {
+        0% {
+            stroke-dasharray: 0, 345.575;
+        }
+    }
+    
+    @media print {
+        .hero-section, .card-header, .btn, .customize-day-btn {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .meal-card {
+            break-inside: avoid;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize meal selection cards
+        document.querySelectorAll('.meal-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const radio = this.querySelector('.form-check-input');
+                radio.checked = true;
+                
+                // Highlight selected card
+                const mealType = this.getAttribute('data-meal-type');
+                document.querySelectorAll(`.meal-card[data-meal-type="${mealType}"]`).forEach(otherCard => {
+                    otherCard.style.borderColor = 'transparent';
+                });
+                this.style.borderColor = '#6c63ff';
+            });
+        });
+        
+        // Generate nutrition breakdown
+        document.querySelector('.generate-plan-btn').addEventListener('click', function() {
+            // Get selected foods
+            const breakfast = document.querySelector('input[name="breakfast"]:checked').value;
+            const lunch = document.querySelector('input[name="lunch"]:checked').value;
+            const snack1 = document.querySelector('input[name="snack1"]:checked').value;
+            const dinner = document.querySelector('input[name="dinner"]:checked').value;
+            const snack2 = document.querySelector('input[name="snack2"]:checked').value;
+            const dessert = document.querySelector('input[name="dessert"]:checked').value;
+            
+            // Get nutrition data
+            const breakfastData = {{ nutrition_data|tojson }}[breakfast];
+            const lunchData = {{ nutrition_data|tojson }}[lunch];
+            const snack1Data = {{ nutrition_data|tojson }}[snack1];
+            const dinnerData = {{ nutrition_data|tojson }}[dinner];
+            const snack2Data = {{ nutrition_data|tojson }}[snack2];
+            const dessertData = {{ nutrition_data|tojson }}[dessert];
+            
+            // Calculate totals
+            const totalCalories = breakfastData.calories + lunchData.calories + snack1Data.calories + 
+                                 dinnerData.calories + snack2Data.calories + dessertData.calories;
+            const totalProtein = breakfastData.protein + lunchData.protein + snack1Data.protein + 
+                                dinnerData.protein + snack2Data.protein + dessertData.protein;
+            const totalCarbs = breakfastData.carbs + lunchData.carbs + snack1Data.carbs + 
+                              dinnerData.carbs + snack2Data.carbs + dessertData.carbs;
+            const totalFats = breakfastData.fats + lunchData.fats + snack1Data.fats + 
+                             dinnerData.fats + snack2Data.fats + dessertData.fats;
+            
+            // Update UI
+            document.getElementById('totalCalories').textContent = totalCalories;
+            const caloriePercentage = Math.round((totalCalories / {{ target_calories }}) * 100);
+            document.getElementById('caloriePercentage').textContent = caloriePercentage;
+            
+            // Animate circular progress
+            const circle = document.getElementById('calorieCircle');
+            const circumference = 2 * Math.PI * 55;
+            const offset = circumference - (caloriePercentage / 100) * circumference;
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            circle.style.strokeDashoffset = circumference;
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 100);
+            
+            document.getElementById('proteinGrams').textContent = totalProtein;
+            document.getElementById('carbsGrams').textContent = totalCarbs;
+            document.getElementById('fatsGrams').textContent = totalFats;
+            
+            // Update meal table
+            document.getElementById('breakfastFood').textContent = breakfast.replace('_', ' ').title();
+            document.getElementById('breakfastCalories').textContent = breakfastData.calories;
+            document.getElementById('breakfastProtein').textContent = breakfastData.protein;
+            document.getElementById('breakfastCarbs').textContent = breakfastData.carbs;
+            document.getElementById('breakfastFats').textContent = breakfastData.fats;
+            
+            document.getElementById('lunchFood').textContent = lunch.replace('_', ' ').title();
+            document.getElementById('lunchCalories').textContent = lunchData.calories;
+            document.getElementById('lunchProtein').textContent = lunchData.protein;
+            document.getElementById('lunchCarbs').textContent = lunchData.carbs;
+            document.getElementById('lunchFats').textContent = lunchData.fats;
+            
+            document.getElementById('snack1Food').textContent = snack1.replace('_', ' ').title();
+            document.getElementById('snack1Calories').textContent = snack1Data.calories;
+            document.getElementById('snack1Protein').textContent = snack1Data.protein;
+            document.getElementById('snack1Carbs').textContent = snack1Data.carbs;
+            document.getElementById('snack1Fats').textContent = snack1Data.fats;
+            
+            document.getElementById('dinnerFood').textContent = dinner.replace('_', ' ').title();
+            document.getElementById('dinnerCalories').textContent = dinnerData.calories;
+            document.getElementById('dinnerProtein').textContent = dinnerData.protein;
+            document.getElementById('dinnerCarbs').textContent = dinnerData.carbs;
+            document.getElementById('dinnerFats').textContent = dinnerData.fats;
+            
+            document.getElementById('snack2Food').textContent = snack2.replace('_', ' ').title();
+            document.getElementById('snack2Calories').textContent = snack2Data.calories;
+            document.getElementById('snack2Protein').textContent = snack2Data.protein;
+            document.getElementById('snack2Carbs').textContent = snack2Data.carbs;
+            document.getElementById('snack2Fats').textContent = snack2Data.fats;
+            
+            document.getElementById('dessertFood').textContent = dessert.replace('_', ' ').title();
+            document.getElementById('dessertCalories').textContent = dessertData.calories;
+            document.getElementById('dessertProtein').textContent = dessertData.protein;
+            document.getElementById('dessertCarbs').textContent = dessertData.carbs;
+            document.getElementById('dessertFats').textContent = dessertData.fats;
+            
+            document.getElementById('totalCaloriesTable').textContent = totalCalories;
+            document.getElementById('totalProteinTable').textContent = totalProtein;
+            document.getElementById('totalCarbsTable').textContent = totalCarbs;
+            document.getElementById('totalFatsTable').textContent = totalFats;
+            
+            // Show nutrition breakdown
+            document.getElementById('nutritionBreakdown').style.display = 'block';
+            
+            // Initialize/update macronutrient chart
+            updateMacronutrientChart(totalProtein, totalCarbs, totalFats);
+            
+            // Scroll to breakdown
+            document.getElementById('nutritionBreakdown').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Macronutrient chart
+        let macronutrientChart;
+        
+        function updateMacronutrientChart(protein, carbs, fats) {
+            const ctx = document.getElementById('macronutrientChart').getContext('2d');
+            
+            if (macronutrientChart) {
+                macronutrientChart.destroy();
+            }
+            
+            macronutrientChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Protein', 'Carbs', 'Fats'],
+                    datasets: [{
+                        data: [protein, carbs, fats],
+                        backgroundColor: [
+                            'rgba(108, 99, 255, 0.8)',
+                            'rgba(29, 209, 161, 0.8)',
+                            'rgba(255, 159, 67, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(108, 99, 255, 1)',
+                            'rgba(29, 209, 161, 1)',
+                            'rgba(255, 159, 67, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        }
+        
+        // Print button
+        document.querySelector('.print-plan-btn').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Save plan button
+        document.querySelector('.save-plan-btn').addEventListener('click', function() {
+            // Get selected meals
+            const selectedMeals = {
+                breakfast: document.querySelector('input[name="breakfast"]:checked').value,
+                lunch: document.querySelector('input[name="lunch"]:checked').value,
+                snack1: document.querySelector('input[name="snack1"]:checked').value,
+                dinner: document.querySelector('input[name="dinner"]:checked').value,
+                snack2: document.querySelector('input[name="snack2"]:checked').value,
+                dessert: document.querySelector('input[name="dessert"]:checked').value,
+                date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+            };
+            
+            // Show loading state
+            const btn = this;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving...';
+            btn.disabled = true;
+            
+            // Send to server (you'll need to implement this endpoint)
+            fetch('/save_meal_plan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(selectedMeals)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+                    alert.style.zIndex = '1100';
+                    alert.innerHTML = `
+                        <strong>Success!</strong> Your meal plan has been saved.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.body.appendChild(alert);
+                    
+                    // Auto-dismiss after 3 seconds
+                    setTimeout(() => {
+                        alert.classList.remove('show');
+                        setTimeout(() => alert.remove(), 150);
+                    }, 3000);
+                } else {
+                    alert('Failed to save plan: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error saving plan');
+            })
+            .finally(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+        });
+        
+        // Customize day buttons
+        document.querySelectorAll('.customize-day-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const day = this.getAttribute('data-day');
+                alert(`Customizing ${day}'s meals would open a modal or redirect to a customization page in a full implementation.`);
+            });
+        });
+    });
+</script>
+{% endblock %}

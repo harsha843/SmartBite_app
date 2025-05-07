@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid nutrition-dashboard">
+    <div class="row g-4">
+        <!-- Main Content Column -->
+        <div class="col-xl-8 mx-auto">
+            <!-- Header Section -->
+            <div class="dashboard-header animate__animated animate__fadeIn">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-6 fw-bold text-gradient-primary mb-1">{{ food.replace('_', ' ').title() }}</h1>
+                        <p class="text-muted mb-0">Nutritional Analysis Report</p>
+                    </div>
+                    <div class="confidence-indicator">
+                        <span class="badge bg-white text-primary rounded-pill px-3 py-2 shadow-sm">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            {{ "%.1f"|format(confidence * 100) }}% Confidence
+                        </span>
+                    </div>
+                </div>
+                <div class="progress mb-4" style="height: 6px;">
+                    <div class="progress-bar bg-gradient-primary" style="width: {{ confidence * 100 }}%"></div>
+                </div>
+            </div>
+
+            <!-- Image and Nutrition Overview -->
+            <div class="row g-4 animate__animated animate__fadeIn">
+                <!-- Food Image Card -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white border-bottom-0 pb-0">
+                            <h5 class="fw-semibold mb-0"><i class="bi bi-image me-2"></i>Food Image</h5>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="food-image-container rounded-3 bg-light overflow-hidden position-relative">
+                                {% if image and image != 'Image not available' %}
+                                    <img src="{{ url_for('static', filename='uploads/' + image.split('/')[-1]) }}" 
+                                         alt="{{ food.replace('_', ' ').title() }}"
+                                         class="img-fluid w-100 h-100 object-fit-cover"
+                                         onerror="this.parentElement.innerHTML = document.getElementById('no-image-template').innerHTML">
+                                {% else %}
+                                    <div class="no-image-placeholder d-flex flex-column align-items-center justify-content-center h-100 p-4">
+                                        <i class="bi bi-image text-muted mb-3" style="font-size: 3rem;"></i>
+                                        <p class="text-muted mb-0">Image not available</p>
+                                    </div>
+                                {% endif %}
+                                <div class="image-overlay d-flex align-items-center justify-content-center">
+                                    <button class="btn btn-light btn-sm rounded-circle shadow-sm" onclick="zoomImage(this)">
+                                        <i class="bi bi-zoom-in"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nutrition Summary Card -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white border-bottom-0 pb-0">
+                            <h5 class="fw-semibold mb-0"><i class="bi bi-clipboard2-data me-2"></i>Nutrition Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="nutrition-card bg-primary-light rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <p class="text-muted small mb-1">Calories</p>
+                                                <h3 class="fw-bold mb-0">{{ nutrition.calories }} <small class="text-muted fs-6">kcal</small></h3>
+                                            </div>
+                                            <div class="nutrition-icon bg-primary bg-opacity-10 rounded-circle p-2">
+                                                <i class="bi bi-fire text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 4px;">
+                                            <div class="progress-bar bg-primary" style="width: {{ nutrition.calories/500 * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="nutrition-card bg-success-light rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <p class="text-muted small mb-1">Protein</p>
+                                                <h3 class="fw-bold mb-0">{{ nutrition.protein }} <small class="text-muted fs-6">g</small></h3>
+                                            </div>
+                                            <div class="nutrition-icon bg-success bg-opacity-10 rounded-circle p-2">
+                                                <i class="bi bi-droplet text-success"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 4px;">
+                                            <div class="progress-bar bg-success" style="width: {{ nutrition.protein/50 * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="nutrition-card bg-warning-light rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <p class="text-muted small mb-1">Carbohydrates</p>
+                                                <h3 class="fw-bold mb-0">{{ nutrition.carbs }} <small class="text-muted fs-6">g</small></h3>
+                                            </div>
+                                            <div class="nutrition-icon bg-warning bg-opacity-10 rounded-circle p-2">
+                                                <i class="bi bi-basket text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 4px;">
+                                            <div class="progress-bar bg-warning" style="width: {{ nutrition.carbs/100 * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="nutrition-card bg-danger-light rounded-3 p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <p class="text-muted small mb-1">Fats</p>
+                                                <h3 class="fw-bold mb-0">{{ nutrition.fats }} <small class="text-muted fs-6">g</small></h3>
+                                            </div>
+                                            <div class="nutrition-icon bg-danger bg-opacity-10 rounded-circle p-2">
+                                                <i class="bi bi-droplet-half text-danger"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 4px;">
+                                            <div class="progress-bar bg-danger" style="width: {{ nutrition.fats/30 * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis Section -->
+            <div class="row g-4 mt-2">
+                <!-- Macronutrient Chart -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white border-bottom-0 pb-0">
+                            <h5 class="fw-semibold mb-0"><i class="bi bi-pie-chart me-2"></i>Macronutrient Distribution</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container position-relative" style="height: 300px;">
+                                <canvas id="macronutrientChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vitamin Score -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white border-bottom-0 pb-0">
+                            <h5 class="fw-semibold mb-0"><i class="bi bi-capsule me-2"></i>Vitamin Score</h5>
+                        </div>
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <div class="vitamin-score-container text-center">
+                                <div class="position-relative d-inline-block">
+                                    <svg width="120" height="120" viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circle-bg"
+                                            d="M18 2.0845
+                                                a 15.9155 15.9155 0 0 1 0 31.831
+                                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            fill="none"
+                                            stroke="#eee"
+                                            stroke-width="3"/>
+                                        <path class="circle-fill"
+                                            stroke-dasharray="{{ nutrition.vitamins * 10 }}, 100"
+                                            d="M18 2.0845
+                                                a 15.9155 15.9155 0 0 1 0 31.831
+                                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            fill="none"
+                                            stroke="url(#vitaminGradient)"
+                                            stroke-width="3"
+                                            stroke-linecap="round"/>
+                                        <defs>
+                                            <linearGradient id="vitaminGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#4361ee"/>
+                                                <stop offset="100%" stop-color="#3a0ca3"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <div class="score-value position-absolute top-50 start-50 translate-middle">
+                                        <h2 class="fw-bold mb-0">{{ nutrition.vitamins }}</h2>
+                                        <small class="text-muted">out of 10</small>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-muted">Based on essential vitamin content</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="text-center mt-4 animate__animated animate__fadeInUp">
+                <a href="{{ url_for('calculator') }}" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-calculator me-2"></i>Calculate Meal Impact
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden template for error fallback -->
+<div id="no-image-template" style="display: none;">
+    <div class="no-image-placeholder d-flex flex-column align-items-center justify-content-center h-100 p-4">
+        <i class="bi bi-image text-muted mb-3" style="font-size: 3rem;"></i>
+        <p class="text-muted mb-0">Image failed to load</p>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Macronutrient Chart
+        const ctx = document.getElementById('macronutrientChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Protein', 'Carbohydrates', 'Fats'],
+                datasets: [{
+                    data: [{{ nutrition.protein }}, {{ nutrition.carbs }}, {{ nutrition.fats }}],
+                    backgroundColor: ['#4cc9f0', '#7209b7', '#f72585'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: {
+                                size: 13
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((context.raw / total) * 100);
+                                return `${context.label}: ${context.raw}g (${percentage}%)`;
+                            }
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                },
+                cutout: '65%',
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+
+        // Animate vitamin score on load
+        const circleFill = document.querySelector('.circle-fill');
+        circleFill.style.strokeDasharray = '0, 100';
+        setTimeout(() => {
+            circleFill.style.transition = 'stroke-dasharray 1.5s ease-out';
+            circleFill.style.strokeDasharray = '{{ nutrition.vitamins * 10 }}, 100';
+        }, 500);
+    });
+
+    function zoomImage(btn) {
+        const imgContainer = btn.closest('.food-image-container');
+        const img = imgContainer.querySelector('img');
+        
+        if (imgContainer.classList.contains('zoomed')) {
+            imgContainer.classList.remove('zoomed');
+            btn.innerHTML = '<i class="bi bi-zoom-in"></i>';
+        } else {
+            imgContainer.classList.add('zoomed');
+            btn.innerHTML = '<i class="bi bi-zoom-out"></i>';
+        }
+    }
+</script>
+
+<!-- CSS Styles -->
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #ebf1ff;
+        --secondary: #3a0ca3;
+        --success: #4cc9f0;
+        --success-light: #e8f9ff;
+        --warning: #f8961e;
+        --warning-light: #fff4e8;
+        --danger: #f72585;
+        --danger-light: #ffebf3;
+        --protein: #4cc9f0;
+        --carbs: #7209b7;
+        --fats: #f72585;
+    }
+
+    .nutrition-dashboard {
+        padding: 2rem 0;
+        background-color: #f8f9fa;
+    }
+
+    .text-gradient-primary {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .dashboard-header {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 1.5rem;
+    }
+
+    .confidence-indicator .badge {
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    .card {
+        border-radius: 12px;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    .card-header {
+        padding: 1.25rem 1.5rem;
+        background-color: white;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .food-image-container {
+        height: 300px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .food-image-container.zoomed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1050;
+        border-radius: 0 !important;
+        background-color: rgba(0,0,0,0.9);
+    }
+
+    .food-image-container.zoomed img {
+        object-fit: contain;
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .food-image-container:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .no-image-placeholder {
+        height: 100%;
+        color: #adb5bd;
+    }
+
+    .nutrition-card {
+        transition: all 0.3s ease;
+    }
+
+    .nutrition-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05) !important;
+    }
+
+    .primary-light { background-color: var(--primary-light); }
+    .success-light { background-color: var(--success-light); }
+    .warning-light { background-color: var(--warning-light); }
+    .danger-light { background-color: var(--danger-light); }
+
+    .nutrition-icon {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .circular-chart {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .circle-bg {
+        fill: none;
+    }
+
+    .circle-fill {
+        fill: none;
+        stroke-dasharray: 0, 100;
+        transition: stroke-dasharray 0.5s ease;
+    }
+
+    .score-value {
+        text-align: center;
+    }
+
+    @media (max-width: 992px) {
+        .food-image-container {
+            height: 250px;
+        }
+        
+        .chart-container {
+            height: 250px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1rem;
+        }
+        
+        .confidence-indicator .badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+</style>
+
+<!-- Include Animate.css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

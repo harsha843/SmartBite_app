@@ -1,0 +1,748 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if ai_diet_plan %}Your AI Dietary Plan{% else %}AI Nutrition Planner{% endif %} | NutriScan AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #00A699;
+            --primary-dark: #00887B;
+            --primary-light: #00C4B3;
+            --accent: #FF5A5F;
+            --accent-dark: #E04A50;
+            --light: #F7F7F7;
+            --dark: #2E2E2E;
+            --gray: #6C757D;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, #FF8C66 100%);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FAFAFA;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+        }
+        
+        .text-gradient {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .bg-gradient {
+            background: var(--gradient-primary);
+        }
+        
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 166, 153, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 90, 95, 0.05) 0%, transparent 20%);
+            z-index: -1;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            overflow: hidden;
+            background: white;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+        
+        .card-header h3 {
+            margin-bottom: 0;
+            font-weight: 800;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+        
+        .btn-accent:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+        
+        /* Form Elements */
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #E0E0E0;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(0, 166, 153, 0.15);
+        }
+        
+        /* Nutrition Cards */
+        .nutrition-card {
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            height: 100%;
+        }
+        
+        .nutrition-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .nutrition-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            color: white;
+        }
+        
+        /* Meal Cards */
+        .meal-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            height: 100%;
+        }
+        
+        .meal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .meal-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        /* Accordion */
+        .accordion-item {
+            border: none;
+            border-radius: 12px !important;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .accordion-button {
+            font-weight: 600;
+            padding: 1.25rem;
+            border-radius: 12px !important;
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(0, 166, 153, 0.1);
+            color: var(--primary-dark);
+            box-shadow: none;
+        }
+        
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: transparent;
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        
+        .hover-scale {
+            transition: var(--transition);
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.03);
+        }
+        
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Pulse Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Progress Bar */
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #F0F0F0;
+        }
+        
+        .progress-bar {
+            border-radius: 4px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 1.25rem;
+            }
+            
+            .accordion-button {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Pattern -->
+    <div class="bg-pattern"></div>
+    
+    <div class="container py-5">
+        {% if ai_diet_plan %}
+        <!-- AI Generated Plan Display -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card mb-5 animate__animated animate__fadeIn">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-robot fa-2x"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0">Your Personalized Nutrition Plan</h3>
+                                <p class="mb-0 opacity-75">AI-generated for optimal results</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info mb-4 fade-in delay-1">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle fa-lg me-3"></i>
+                                <div>This plan was customized based on your unique profile and goals</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row fade-in delay-1">
+                            <!-- Profile Summary -->
+                            <div class="col-md-6 mb-4">
+                                <div class="nutrition-card">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon bg-primary me-3">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <h5 class="mb-0 text-gradient">Your Profile</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <div class="text-muted small">Age</div>
+                                            <div class="h5">{{ user_info.age }}</div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="text-muted small">Gender</div>
+                                            <div class="h5">{{ user_info.gender }}</div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="text-muted small">Weight</div>
+                                            <div class="h5">{{ user_info.weight }} kg</div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="text-muted small">Height</div>
+                                            <div class="h5">{{ user_info.height }} cm</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted small">Activity</div>
+                                            <div class="h5">{{ user_info.activity_level }}</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted small">Goal</div>
+                                            <div class="h5">{{ user_info.goal }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Nutrition Targets -->
+                            <div class="col-md-6 mb-4">
+                                <div class="nutrition-card">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon bg-accent me-3">
+                                            <i class="fas fa-bullseye"></i>
+                                        </div>
+                                        <h5 class="mb-0 text-gradient">Daily Targets</h5>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted">Calories</span>
+                                            <strong class="h5">{{ nutritional_info.calories }} kcal</strong>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 text-center">
+                                            <div class="icon bg-primary mb-2">
+                                                <i class="fas fa-dumbbell"></i>
+                                            </div>
+                                            <div class="text-muted small">Protein</div>
+                                            <div class="h5">{{ nutritional_info.protein }}g</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <div class="icon bg-success mb-2">
+                                                <i class="fas fa-bread-slice"></i>
+                                            </div>
+                                            <div class="text-muted small">Carbs</div>
+                                            <div class="h5">{{ nutritional_info.carbs }}g</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <div class="icon bg-info mb-2">
+                                                <i class="fas fa-cheese"></i>
+                                            </div>
+                                            <div class="text-muted small">Fats</div>
+                                            <div class="h5">{{ nutritional_info.fats }}g</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4 fade-in delay-2">
+                        
+                        <!-- Meal Plan -->
+                        <div class="text-center mb-4 fade-in delay-2">
+                            <h4 class="text-gradient"><i class="fas fa-utensils me-2"></i>Your Custom Meal Plan</h4>
+                            <p class="text-muted">Carefully crafted meals to help you reach your goals</p>
+                        </div>
+                        
+                        <div class="accordion fade-in delay-2" id="mealPlanAccordion">
+                            {% for day, meals in ai_diet_plan.items() %}
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#day{{ loop.index }}">
+                                        <i class="fas fa-calendar-day me-2"></i>Day {{ loop.index }} - {{ meals.date }}
+                                    </button>
+                                </h2>
+                                <div id="day{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#mealPlanAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            {% for meal, details in meals.items() %}
+                                            {% if meal != 'date' %}
+                                            <div class="col-md-4 mb-3">
+                                                <div class="meal-card h-100">
+                                                    <div class="meal-header d-flex align-items-center">
+                                                        <i class="fas fa-{{ 
+                                                            'coffee' if meal == 'Breakfast' 
+                                                            else 'hamburger' if meal == 'Lunch' 
+                                                            else 'drumstick-bite' if meal == 'Dinner' 
+                                                            else 'apple-alt' 
+                                                        }} me-2"></i>
+                                                        <h5 class="mb-0">{{ meal }}</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h6 class="text-primary mb-3">
+                                                            <i class="fas fa-list-ul me-2"></i>Menu
+                                                        </h6>
+                                                        <p>{{ details.menu }}</p>
+                                                        
+                                                        <h6 class="text-primary mb-3">
+                                                            <i class="fas fa-chart-pie me-2"></i>Nutrition
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li class="mb-2">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span class="text-muted">
+                                                                        <i class="fas fa-fire text-danger me-2"></i>Calories
+                                                                    </span>
+                                                                    <strong>{{ details.nutrition.calories }} kcal</strong>
+                                                                </div>
+                                                            </li>
+                                                            <li class="mb-2">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span class="text-muted">
+                                                                        <i class="fas fa-dumbbell text-primary me-2"></i>Protein
+                                                                    </span>
+                                                                    <strong>{{ details.nutrition.protein }}g</strong>
+                                                                </div>
+                                                            </li>
+                                                            <li class="mb-2">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span class="text-muted">
+                                                                        <i class="fas fa-bread-slice text-success me-2"></i>Carbs
+                                                                    </span>
+                                                                    <strong>{{ details.nutrition.carbs }}g</strong>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span class="text-muted">
+                                                                        <i class="fas fa-cheese text-info me-2"></i>Fats
+                                                                    </span>
+                                                                    <strong>{{ details.nutrition.fats }}g</strong>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between mt-4 fade-in delay-3">
+                            <button class="btn btn-outline-primary" onclick="window.print()">
+                                <i class="fas fa-print me-2"></i>Print Plan
+                            </button>
+                            <div>
+                                <a href="{{ url_for('ai_dietary_plan') }}" class="btn btn-accent me-2">
+                                    <i class="fas fa-sync-alt me-2"></i>Generate New Plan
+                                </a>
+                                <button class="btn btn-primary" id="savePlanBtn">
+                                    <i class="fas fa-save me-2"></i>Save Plan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- AI Dietary Plan Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card mb-5 animate__animated animate__fadeIn">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-robot fa-2x"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0">AI Nutrition Planner</h3>
+                                <p class="mb-0 opacity-75">Get your personalized diet plan in minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-4 fade-in delay-1">
+                            Our AI nutritionist will create a customized meal plan based on your unique profile, 
+                            preferences, and health goals.
+                        </p>
+                        
+                        <form method="POST" action="{{ url_for('ai_dietary_plan') }}" class="fade-in delay-1">
+                            <div class="row mb-4">
+                                <!-- Personal Info -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="age" class="form-label">
+                                        <i class="fas fa-birthday-cake text-primary me-2"></i>Age
+                                    </label>
+                                    <input type="number" class="form-control" id="age" name="age" required min="10" max="100">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="gender" class="form-label">
+                                        <i class="fas fa-venus-mars text-primary me-2"></i>Gender
+                                    </label>
+                                    <select class="form-select" id="gender" name="gender" required>
+                                        <option value="" selected disabled>Select gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Physical Info -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="weight" class="form-label">
+                                        <i class="fas fa-weight text-primary me-2"></i>Weight (kg)
+                                    </label>
+                                    <input type="number" class="form-control" id="weight" name="weight" required min="30" max="200" step="0.1">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="height" class="form-label">
+                                        <i class="fas fa-ruler-vertical text-primary me-2"></i>Height (cm)
+                                    </label>
+                                    <input type="number" class="form-control" id="height" name="height" required min="100" max="250">
+                                </div>
+                                
+                                <!-- Lifestyle -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="activity_level" class="form-label">
+                                        <i class="fas fa-running text-primary me-2"></i>Activity Level
+                                    </label>
+                                    <select class="form-select" id="activity_level" name="activity_level" required>
+                                        <option value="" selected disabled>Select activity level</option>
+                                        <option value="Sedentary">Sedentary (little or no exercise)</option>
+                                        <option value="Lightly active">Lightly active (light exercise 1-3 days/week)</option>
+                                        <option value="Moderately active">Moderately active (moderate exercise 3-5 days/week)</option>
+                                        <option value="Very active">Very active (hard exercise 6-7 days/week)</option>
+                                        <option value="Extremely active">Extremely active (very hard exercise & physical job)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="goal" class="form-label">
+                                        <i class="fas fa-bullseye text-primary me-2"></i>Primary Goal
+                                    </label>
+                                    <select class="form-select" id="goal" name="goal" required>
+                                        <option value="" selected disabled>Select your goal</option>
+                                        <option value="Weight loss">Lose weight</option>
+                                        <option value="Maintenance">Maintain current weight</option>
+                                        <option value="Weight gain">Gain weight</option>
+                                        <option value="Muscle gain">Build muscle</option>
+                                        <option value="Improve health">Improve overall health</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Dietary Preferences -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="diet_preference" class="form-label">
+                                        <i class="fas fa-utensils text-primary me-2"></i>Dietary Preference
+                                    </label>
+                                    <select class="form-select" id="diet_preference" name="diet_preference" required>
+                                        <option value="" selected disabled>Select dietary preference</option>
+                                        <option value="Vegetarian">Vegetarian</option>
+                                        <option value="Vegan">Vegan</option>
+                                        <option value="Omnivore">Omnivore (non-vegetarian)</option>
+                                        <option value="Pescatarian">Pescatarian (fish but no other meat)</option>
+                                        <option value="Gluten-free">Gluten-free</option>
+                                        <option value="Lactose-free">Lactose-free</option>
+                                        <option value="Keto">Keto</option>
+                                        <option value="Paleo">Paleo</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="allergies" class="form-label">
+                                        <i class="fas fa-allergies text-primary me-2"></i>Allergies/Restrictions
+                                    </label>
+                                    <input type="text" class="form-control" id="allergies" name="allergies" placeholder="e.g., nuts, dairy, shellfish">
+                                </div>
+                                
+                                <!-- Health Info -->
+                                <div class="col-12 mb-3">
+                                    <label for="health_conditions" class="form-label">
+                                        <i class="fas fa-heartbeat text-primary me-2"></i>Health Conditions
+                                    </label>
+                                    <textarea class="form-control" id="health_conditions" name="health_conditions" rows="2" placeholder="e.g., diabetes, high blood pressure, etc."></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid fade-in delay-2">
+                                <button type="submit" class="btn btn-primary btn-lg py-3">
+                                    <i class="fas fa-magic me-2"></i>Generate My AI Nutrition Plan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Features Section -->
+                <div class="card mb-4 animate__animated animate__fadeIn animate__delay-1s">
+                    <div class="card-body text-center">
+                        <h5 class="text-gradient mb-4">Why Choose Our AI Nutritionist?</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-4 fade-in delay-2">
+                                <div class="feature-icon floating bg-primary">
+                                    <i class="fas fa-user-cog"></i>
+                                </div>
+                                <h6>100% Personalized</h6>
+                                <p class="small text-muted">Tailored to your body, goals, and preferences</p>
+                            </div>
+                            <div class="col-md-4 mb-4 fade-in delay-3">
+                                <div class="feature-icon floating bg-accent">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h6>AI-Powered</h6>
+                                <p class="small text-muted">Advanced Gemini AI for optimal nutrition</p>
+                            </div>
+                            <div class="col-md-4 mb-4 fade-in delay-4">
+                                <div class="feature-icon floating bg-success">
+                                    <i class="fas fa-flask"></i>
+                                </div>
+                                <h6>Science-Backed</h6>
+                                <p class="small text-muted">Based on latest nutritional research</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize animations
+            const fadeIns = document.querySelectorAll('.fade-in');
+            fadeIns.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.animation = `fadeInUp 0.8s ease-out ${index * 0.2}s forwards`;
+                }, 100);
+            });
+            
+            // Save plan button animation
+            const savePlanBtn = document.getElementById('savePlanBtn');
+            if (savePlanBtn) {
+                savePlanBtn.addEventListener('click', function() {
+                    const originalText = savePlanBtn.innerHTML;
+                    savePlanBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Saving...';
+                    savePlanBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        savePlanBtn.innerHTML = '<i class="fas fa-check me-2"></i> Saved!';
+                        savePlanBtn.classList.add('btn-success');
+                        setTimeout(() => {
+                            savePlanBtn.innerHTML = originalText;
+                            savePlanBtn.classList.remove('btn-success');
+                            savePlanBtn.disabled = false;
+                        }, 2000);
+                    }, 1500);
+                });
+            }
+            
+            // Form input animations
+            const inputs = document.querySelectorAll('.form-control, .form-select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('animate__animated', 'animate__pulse');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('animate__animated', 'animate__pulse');
+                });
+            });
+            
+            // Print button animation
+            $('[onclick="window.print()"]').on('click', function() {
+                $(this).addClass('animate__animated animate__rubberBand');
+                setTimeout(() => {
+                    $(this).removeClass('animate__animated animate__rubberBand');
+                }, 1000);
+            });
+            
+            // Generate button hover effect
+            $('button[type="submit"]').hover(
+                function() {
+                    $(this).addClass('animate__animated animate__pulse');
+                },
+                function() {
+                    $(this).removeClass('animate__animated animate__pulse');
+                }
+            );
+            
+            // Accordion item hover effect
+            $('.accordion-button').hover(
+                function() {
+                    $(this).addClass('animate__animated animate__headShake');
+                },
+                function() {
+                    $(this).removeClass('animate__animated animate__headShake');
+                }
+            );
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

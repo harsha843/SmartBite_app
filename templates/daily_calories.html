@@ -1,0 +1,756 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Main Card with Glass Morphism Effect -->
+            <div class="card border-0 glass-morphism animate__animated animate__fadeIn">
+                <!-- Animated Header with Gradient -->
+                <div class="card-header py-4 position-relative overflow-hidden text-white" 
+                     style="background: linear-gradient(135deg, #FF7E5F 0%, #FEB47B 50%, #FF6B6B 100%); 
+                            background-size: 200% 200%; 
+                            animation: gradientMove 8s ease infinite;
+                            border-bottom: 1px solid rgba(255,255,255,0.2);">
+                    <div class="text-center">
+                        <h2 class="mb-1 fw-bold">Your Personalized Nutrition Plan</h2>
+                        <p class="mb-0 opacity-75">Optimized for your health goals</p>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Calorie Targets - Enhanced with Floating Animation -->
+                    <div class="row mb-5 g-4">
+                        <div class="col-md-4 animate__animated animate__fadeInLeft">
+                            <div class="card h-100 border-0 shadow-sm glass-card" 
+                                 data-aos="flip-left" data-aos-delay="100">
+                                <div class="card-body p-4 text-center">
+                                    <div class="icon-lg bg-primary-soft text-primary rounded-circle mx-auto mb-3 floating">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <h3 class="h5">Maintenance</h3>
+                                    <h2 class="display-4 fw-bold text-primary mb-3 pulse">{{ maintenance|round|int }}</h2>
+                                    <p class="text-muted mb-2">calories/day</p>
+                                    <div class="badge bg-primary-soft text-primary rounded-pill floating">Current Weight</div>
+                                    <div class="mt-3">
+                                        <small class="text-muted"><i class="fas fa-dumbbell text-primary me-1"></i> Protein: {{ (protein_grams*4)|round|int }} kcal</small><br>
+                                        <small class="text-muted"><i class="fas fa-bread-slice text-primary me-1"></i> Carbs: {{ (carb_grams*4)|round|int }} kcal</small><br>
+                                        <small class="text-muted"><i class="fas fa-bacon text-primary me-1"></i> Fats: {{ (fat_grams*9)|round|int }} kcal</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 animate__animated animate__fadeInUp">
+                            <div class="card h-100 border-0 shadow-sm glass-card" 
+                                 data-aos="flip-left" data-aos-delay="200">
+                                <div class="card-body p-4 text-center">
+                                    <div class="icon-lg bg-success-soft text-success rounded-circle mx-auto mb-3 floating">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                    <h3 class="h5">Weight Loss</h3>
+                                    <h2 class="display-4 fw-bold text-success mb-3 pulse">{{ weight_loss|round|int }}</h2>
+                                    <p class="text-muted mb-2">calories/day</p>
+                                    <div class="badge bg-success-soft text-success rounded-pill floating">0.5kg/week</div>
+                                    <div class="mt-3">
+                                        <small class="text-muted"><i class="fas fa-dumbbell text-success me-1"></i> Protein: {{ (protein_grams*1.2)|round|int }}g</small><br>
+                                        <small class="text-muted"><i class="fas fa-bread-slice text-success me-1"></i> Carbs: {{ (carb_grams*0.9)|round|int }}g</small><br>
+                                        <small class="text-muted"><i class="fas fa-bacon text-success me-1"></i> Fats: {{ (fat_grams*0.9)|round|int }}g</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 animate__animated animate__fadeInRight">
+                            <div class="card h-100 border-0 shadow-sm glass-card" 
+                                 data-aos="flip-left" data-aos-delay="300">
+                                <div class="card-body p-4 text-center">
+                                    <div class="icon-lg bg-warning-soft text-warning rounded-circle mx-auto mb-3 floating">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                    <h3 class="h5">Weight Gain</h3>
+                                    <h2 class="display-4 fw-bold text-warning mb-3 pulse">{{ weight_gain|round|int }}</h2>
+                                    <p class="text-muted mb-2">calories/day</p>
+                                    <div class="badge bg-warning-soft text-warning rounded-pill floating">Muscle Building</div>
+                                    <div class="mt-3">
+                                        <small class="text-muted"><i class="fas fa-dumbbell text-warning me-1"></i> Protein: {{ (protein_grams*1.3)|round|int }}g</small><br>
+                                        <small class="text-muted"><i class="fas fa-bread-slice text-warning me-1"></i> Carbs: {{ (carb_grams*1.2)|round|int }}g</small><br>
+                                        <small class="text-muted"><i class="fas fa-bacon text-warning me-1"></i> Fats: {{ (fat_grams*1.1)|round|int }}g</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Macronutrient Breakdown - Enhanced with Wave Effect -->
+                    <div class="row mb-5">
+                        <div class="col-lg-12">
+                            <div class="card border-0 glass-card animate__animated animate__fadeIn" data-aos="zoom-in">
+                                <div class="card-header bg-transparent border-0">
+                                    <h4 class="mb-0"><i class="fas fa-chart-pie me-2 text-primary"></i>Macronutrient Breakdown</h4>
+                                </div>
+                                <div class="card-body position-relative">
+                                    <div class="wave-bg"></div>
+                                    <div class="row">
+                                        <!-- Protein -->
+                                        <div class="col-md-4 mb-4 mb-md-0">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="icon-lg bg-primary-soft text-primary rounded-circle me-3 floating">
+                                                    <i class="fas fa-dumbbell"></i>
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-0">Protein</h5>
+                                                    <p class="text-muted mb-0">Muscle building & repair</p>
+                                                </div>
+                                            </div>
+                                            <div class="ps-5">
+                                                <h2 class="fw-bold">{{ protein_grams|round|int }} <small class="fs-6 fw-normal text-muted">grams/day</small></h2>
+                                                <div class="progress mb-3" style="height: 12px;">
+                                                    <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" 
+                                                         style="width: {{ ((protein_grams*4)/maintenance*100)|round|int }}%" 
+                                                         aria-valuenow="{{ ((protein_grams*4)/maintenance*100)|round|int }}" 
+                                                         aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <ul class="list-unstyled">
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> {{ (protein_grams*4)|round|int }} calories</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> {{ ((protein_grams*4)/maintenance*100)|round|int }}% of intake</li>
+                                                    <li><i class="fas fa-check-circle text-primary me-2"></i> {{ (user.weight*1.6)|round|int }}g recommended</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Carbs -->
+                                        <div class="col-md-4 mb-4 mb-md-0">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="icon-lg bg-success-soft text-success rounded-circle me-3 floating">
+                                                    <i class="fas fa-bread-slice"></i>
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-0">Carbohydrates</h5>
+                                                    <p class="text-muted mb-0">Primary energy source</p>
+                                                </div>
+                                            </div>
+                                            <div class="ps-5">
+                                                <h2 class="fw-bold">{{ carb_grams|round|int }} <small class="fs-6 fw-normal text-muted">grams/day</small></h2>
+                                                <div class="progress mb-3" style="height: 12px;">
+                                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" 
+                                                         style="width: {{ ((carb_grams*4)/maintenance*100)|round|int }}%" 
+                                                         aria-valuenow="{{ ((carb_grams*4)/maintenance*100)|round|int }}" 
+                                                         aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <ul class="list-unstyled">
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> {{ (carb_grams*4)|round|int }} calories</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> {{ ((carb_grams*4)/maintenance*100)|round|int }}% of intake</li>
+                                                    <li><i class="fas fa-check-circle text-success me-2"></i> Focus on complex carbs</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Fats -->
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="icon-lg bg-warning-soft text-warning rounded-circle me-3 floating">
+                                                    <i class="fas fa-bacon"></i>
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-0">Fats</h5>
+                                                    <p class="text-muted mb-0">Hormones & brain function</p>
+                                                </div>
+                                            </div>
+                                            <div class="ps-5">
+                                                <h2 class="fw-bold">{{ fat_grams|round|int }} <small class="fs-6 fw-normal text-muted">grams/day</small></h2>
+                                                <div class="progress mb-3" style="height: 12px;">
+                                                    <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" 
+                                                         style="width: {{ ((fat_grams*9)/maintenance*100)|round|int }}%" 
+                                                         aria-valuenow="{{ ((fat_grams*9)/maintenance*100)|round|int }}" 
+                                                         aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <ul class="list-unstyled">
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> {{ (fat_grams*9)|round|int }} calories</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> {{ ((fat_grams*9)/maintenance*100)|round|int }}% of intake</li>
+                                                    <li><i class="fas fa-check-circle text-warning me-2"></i> Prioritize healthy fats</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hydration & Micronutrients - Enhanced with Floating Elements -->
+                    <div class="row">
+                        <div class="col-lg-6 mb-4 mb-lg-0">
+                            <div class="card border-0 glass-card h-100" data-aos="fade-right">
+                                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fas fa-tint me-2 text-info"></i>Hydration Tracker</h5>
+                                    <span class="badge bg-info-soft text-info">
+                                        <i class="fas fa-bell me-1"></i> Daily Goal: {{ water_liters|round(1) }}L
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Circular Hydration Progress -->
+                                    <div class="hydration-progress-container text-center mb-4">
+                                        <div class="circle-progress mx-auto" id="hydrationCircle">
+                                            <svg class="circle-chart" viewBox="0 0 36 36">
+                                                <path class="circle-bg"
+                                                    d="M18 2.0845
+                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                />
+                                                <path class="circle-fill"
+                                                    d="M18 2.0845
+                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                    stroke-dasharray="0, 100"
+                                                />
+                                            </svg>
+                                            <div class="circle-progress-content">
+                                                <div class="circle-progress-text">
+                                                    <span class="display-4 fw-bold text-info" id="currentWaterAmount">0</span>
+                                                    <span class="fs-4 text-muted">/{{ water_liters|round(1) }}L</span>
+                                                </div>
+                                                <small class="text-muted" id="waterPercentage">0% Complete</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Water Intake Buttons -->
+                                    <div class="water-intake-buttons mb-4">
+                                        <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                            <button class="btn btn-outline-info rounded-pill water-intake-btn" data-amount="0.25">
+                                                <i class="fas fa-plus me-1"></i> 250ml
+                                            </button>
+                                            <button class="btn btn-outline-info rounded-pill water-intake-btn" data-amount="0.5">
+                                                <i class="fas fa-plus me-1"></i> 500ml
+                                            </button>
+                                            <button class="btn btn-info rounded-pill water-intake-btn" data-amount="1">
+                                                <i class="fas fa-plus me-1"></i> 1L
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hydration History -->
+                                    <div class="hydration-history">
+                                        <h6 class="text-muted mb-3"><i class="fas fa-history me-1"></i> Today's Intake</h6>
+                                        <div class="intake-history" id="waterHistory">
+                                            <div class="empty-state text-center py-3">
+                                                <i class="fas fa-tint text-muted fa-2x mb-2"></i>
+                                                <p class="text-muted mb-0">No water logged yet</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="card border-0 glass-card h-100" data-aos="fade-left">
+                                <div class="card-header bg-transparent border-0">
+                                    <h5 class="mb-0"><i class="fas fa-capsules me-2 text-danger"></i>Essential Micronutrients</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% set nutrients = [
+                                            {'icon': 'sun', 'name': 'Vitamin D', 'value': '600-800 IU', 'class': 'danger'},
+                                            {'icon': 'water', 'name': 'Omega-3', 'value': '250-500mg', 'class': 'danger'},
+                                            {'icon': 'magnet', 'name': 'Iron', 'value': '18mg' if user.gender == 'Female' else '8mg', 'class': 'danger'},
+                                            {'icon': 'egg', 'name': 'Calcium', 'value': '1000-1200mg', 'class': 'danger'},
+                                            {'icon': 'bolt', 'name': 'Magnesium', 'value': '310-420mg', 'class': 'danger'},
+                                            {'icon': 'star', 'name': 'Zinc', 'value': '8-11mg', 'class': 'danger'}
+                                        ] %}
+                                        {% for nutrient in nutrients %}
+                                        <div class="col-6 mb-3">
+                                            <div class="d-flex align-items-center p-3 rounded floating-small" 
+                                                 style="background: rgba(220, 53, 69, 0.05);">
+                                                <div class="icon-sm bg-danger-soft text-danger rounded-circle me-3">
+                                                    <i class="fas fa-{{ nutrient.icon }}"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">{{ nutrient.name }}</small>
+                                                    <p class="mb-0 fw-bold">{{ nutrient.value }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="alert bg-light-soft border-0 floating-small">
+                                            <i class="fas fa-info-circle me-2 text-info"></i> Focus on whole foods to meet these needs
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CTA - Enhanced with Pulse Animation -->
+                    <div class="text-center mt-5" data-aos="zoom-in-up">
+                        <a href="{{ url_for('dietary_plan') }}" class="btn btn-lg btn-primary px-5 py-3 rounded-pill shadow floating-cta">
+                            <i class="fas fa-magic me-2"></i>Generate My Personalized Meal Plan
+                        </a>
+                        <p class="text-muted mt-3">Based on your goals and preferences</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Base Styles with Glass Morphism */
+    :root {
+        --primary-color: #FF7E5F;
+        --secondary-color: #FEB47B;
+        --accent-color: #FF6B6B;
+        --success-color: #6BCB77;
+        --danger-color: #FF9E9E;
+        --warning-color: #FFD166;
+        --info-color: #4ECDC4;
+        --light-color: #F7FFF7;
+        --dark-color: #292F36;
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    }
+    
+    .glass-morphism {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    
+    .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Floating Animation */
+    .floating {
+        animation: floating 3s ease-in-out infinite;
+    }
+    
+    .floating-small {
+        animation: floating-small 3s ease-in-out infinite;
+    }
+    
+    .floating-cta {
+        animation: floating-cta 3s ease-in-out infinite;
+    }
+    
+    /* Pulse Animation for Important Numbers */
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    /* Wave Background */
+    .wave-bg {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(255,255,255,0.2)' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+        background-size: cover;
+        z-index: 0;
+        opacity: 0.5;
+    }
+    
+    /* Progress Bars */
+    .progress {
+        border-radius: 100px;
+        background-color: rgba(255,255,255,0.5);
+        height: 12px;
+    }
+    
+    .progress-bar {
+        border-radius: 100px;
+    }
+    
+    /* Soft Background Colors */
+    .bg-primary-soft { background-color: rgba(255, 126, 95, 0.1) !important; }
+    .bg-success-soft { background-color: rgba(107, 203, 119, 0.1) !important; }
+    .bg-warning-soft { background-color: rgba(255, 209, 102, 0.1) !important; }
+    .bg-info-soft { background-color: rgba(78, 205, 196, 0.1) !important; }
+    .bg-danger-soft { background-color: rgba(255, 158, 158, 0.1) !important; }
+    .bg-light-soft { background-color: rgba(247, 255, 247, 0.5) !important; }
+    
+    /* Text Colors */
+    .text-primary { color: var(--primary-color) !important; }
+    .text-success { color: var(--success-color) !important; }
+    .text-warning { color: var(--warning-color) !important; }
+    .text-info { color: var(--info-color) !important; }
+    .text-danger { color: var(--danger-color) !important; }
+    
+    /* Animations */
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    @keyframes floating-small {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    @keyframes floating-cta {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    /* New Hydration Tracker Styles */
+    .hydration-progress-container {
+        position: relative;
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .circle-progress {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+    }
+
+    .circle-chart {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .circle-bg {
+        fill: none;
+        stroke: rgba(59, 130, 246, 0.1);
+        stroke-width: 3;
+    }
+
+    .circle-fill {
+        fill: none;
+        stroke: #3b82f6;
+        stroke-width: 3;
+        stroke-linecap: round;
+        transition: all 0.8s ease-in-out;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+    }
+
+    .circle-progress-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .circle-progress-text {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 5px;
+    }
+
+    .water-intake-buttons .btn {
+        transition: all 0.3s ease;
+        min-width: 100px;
+    }
+
+    .water-intake-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
+    }
+
+    .intake-history {
+        background: rgba(255, 255, 255, 0.6);
+        padding: 15px;
+        border-radius: 12px;
+        backdrop-filter: blur(5px);
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .intake-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .intake-item:last-child {
+        border-bottom: none;
+    }
+
+    .intake-amount {
+        font-weight: bold;
+        color: #3b82f6;
+    }
+
+    .intake-time {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    /* Celebration Animation */
+    .hydration-celebration {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .hydration-celebration.show {
+        opacity: 1;
+    }
+
+    .celebration-icon {
+        font-size: 3rem;
+        color: #3b82f6;
+        animation: pulse 1.5s infinite;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .water-container {
+            width: 100px;
+            height: 150px;
+        }
+        
+        .glass {
+            width: 60px;
+            height: 120px;
+        }
+        
+        .water-controls {
+            flex-direction: row;
+            margin-top: 20px;
+        }
+        
+        .water-btn {
+            width: 80px;
+            height: 30px;
+            font-size: 0.8rem;
+        }
+        
+        .card-header {
+            text-align: center;
+        }
+        
+        .hydration-progress-container {
+            max-width: 200px;
+        }
+        
+        .water-intake-buttons .btn {
+            min-width: 80px;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+    }
+</style>
+
+<!-- Include AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS animations
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+    
+    // New Hydration Tracker Functionality
+    const circleFill = document.querySelector('.circle-fill');
+    const currentWaterAmount = document.getElementById('currentWaterAmount');
+    const waterPercentage = document.getElementById('waterPercentage');
+    const waterHistory = document.getElementById('waterHistory');
+    const waterIntakeButtons = document.querySelectorAll('.water-intake-btn');
+    const hydrationCelebration = document.createElement('div');
+    hydrationCelebration.className = 'hydration-celebration';
+    hydrationCelebration.innerHTML = '<i class="fas fa-check-circle celebration-icon"></i>';
+    document.querySelector('.circle-progress').appendChild(hydrationCelebration);
+    
+    const dailyGoal = {{ water_liters }};
+    let currentIntake = 0;
+    let intakeHistory = [];
+    
+    // Load saved data from localStorage
+    loadHydrationData();
+    
+    // Add event listeners to water buttons
+    waterIntakeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const amount = parseFloat(this.getAttribute('data-amount'));
+            addWaterIntake(amount);
+            
+            // Button animation
+            this.classList.add('active');
+            setTimeout(() => {
+                this.classList.remove('active');
+            }, 300);
+        });
+    });
+    
+    function addWaterIntake(amount) {
+        // Add to current intake
+        currentIntake = Math.min(currentIntake + amount, dailyGoal);
+        
+        // Record intake with timestamp
+        const now = new Date();
+        intakeHistory.push({
+            amount: amount,
+            time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        
+        // Update UI
+        updateHydrationDisplay();
+        updateHistoryDisplay();
+        saveHydrationData();
+        
+        // Celebrate if goal reached
+        if (currentIntake >= dailyGoal) {
+            celebrateGoal();
+        }
+    }
+    
+    function updateHydrationDisplay() {
+        const percentage = (currentIntake / dailyGoal) * 100;
+        const dashArray = `${percentage}, 100`;
+        
+        // Animate circle progress
+        circleFill.setAttribute('stroke-dasharray', dashArray);
+        
+        // Update text displays
+        currentWaterAmount.textContent = currentIntake.toFixed(1);
+        waterPercentage.textContent = `${Math.round(percentage)}% Complete`;
+    }
+    
+    function updateHistoryDisplay() {
+        // Clear empty state if exists
+        const emptyState = waterHistory.querySelector('.empty-state');
+        if (emptyState) {
+            waterHistory.removeChild(emptyState);
+        }
+        
+        // Clear existing items
+        while (waterHistory.firstChild) {
+            waterHistory.removeChild(waterHistory.firstChild);
+        }
+        
+        // Add history items in reverse chronological order
+        intakeHistory.slice().reverse().forEach(item => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'intake-item';
+            historyItem.innerHTML = `
+                <span class="intake-amount">+${item.amount}L</span>
+                <span class="intake-time">${item.time}</span>
+            `;
+            waterHistory.appendChild(historyItem);
+        });
+    }
+    
+    function celebrateGoal() {
+        hydrationCelebration.classList.add('show');
+        
+        setTimeout(() => {
+            hydrationCelebration.classList.remove('show');
+        }, 2000);
+    }
+    
+    function saveHydrationData() {
+        const data = {
+            currentIntake: currentIntake,
+            intakeHistory: intakeHistory,
+            date: new Date().toLocaleDateString()
+        };
+        localStorage.setItem('hydrationData', JSON.stringify(data));
+    }
+    
+    function loadHydrationData() {
+        const savedData = localStorage.getItem('hydrationData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            
+            // Only load if it's from today
+            if (data.date === new Date().toLocaleDateString()) {
+                currentIntake = data.currentIntake;
+                intakeHistory = data.intakeHistory;
+                updateHydrationDisplay();
+                updateHistoryDisplay();
+            }
+        }
+    }
+    
+    // Reset at midnight
+    function checkForNewDay() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        
+        // Check if it's midnight (or just after when the page loads)
+        if (hours === 0 && minutes < 5) {
+            localStorage.removeItem('hydrationData');
+        }
+    }
+    
+    checkForNewDay();
+    
+    // Add hover effects to cards
+    const cards = document.querySelectorAll('.glass-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-5px)';
+            card.style.boxShadow = '0 15px 30px rgba(0,0,0,0.1)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.boxShadow = '';
+        });
+    });
+});
+</script>
+{% endblock %}
